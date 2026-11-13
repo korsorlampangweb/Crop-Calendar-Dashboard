@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ปฏิทินสินค้าเกษตรรายเดือน | จังหวัดลำปาง</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-thai@latest/thai-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-thai@latest/thai-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-thai@latest/thai-700-normal.css">
+<style>
+  * { font-family: 'Noto Sans Thai', sans-serif; }
+  body {
+    background:
+      radial-gradient(ellipse at top left, rgba(6, 78, 59, 0.08), transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(16, 185, 129, 0.06), transparent 50%),
+      linear-gradient(135deg, #f0fdf4 0%, #ffffff 50%, #ecfdf5 100%);
+    min-height: 100vh;
+  }
+  /* Premium Card with refined border */
+  .glass {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(6, 78, 59, 0.12);
+    box-shadow:
+      0 1px 2px rgba(6, 78, 59, 0.04),
+      0 4px 16px rgba(6, 78, 59, 0.06);
+  }
+  .glass-strong {
+    background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(236,253,245,0.95) 100%);
+    border: 1px solid rgba(6, 95, 70, 0.18);
+    box-shadow:
+      0 1px 3px rgba(6, 78, 59, 0.06),
+      0 8px 24px rgba(6, 78, 59, 0.08);
+  }
+  .gradient-header {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+  }
+  .gradient-green {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  }
+  .gradient-accent {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  }
+  .card-hover { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 4px 12px rgba(6, 78, 59, 0.08),
+      0 16px 40px rgba(6, 95, 70, 0.15);
+    border-color: rgba(5, 150, 105, 0.4);
+  }
+  .cal-cell {
+    transition: all 0.25s ease;
+    cursor: pointer;
+    border: 1px solid rgba(6, 78, 59, 0.08);
+  }
+  .cal-cell:hover {
+    transform: scale(1.04);
+    z-index: 10;
+    box-shadow: 0 8px 24px rgba(6, 78, 59, 0.2);
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: #ecfdf5; border-radius: 3px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #047857; border-radius: 3px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #065f46; }
+  .pulse-dot { animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.15); }
+  }
+  .fade-in { animation: fadeIn 0.5s ease-in; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  select, input {
+    font-family: 'Noto Sans Thai', sans-serif;
+  }
+  .filter-select {
+    background: white;
+    border: 1.5px solid #a7f3d0;
+    transition: all 0.2s ease;
+  }
+  .filter-select:hover { border-color: #059669; }
+  .filter-select:focus {
+    outline: none;
+    border-color: #047857;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  }
+  .tab-active {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+  }
+  .kpi-icon {
+    background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35);
+  }
+  .section-title {
+    position: relative;
+    padding-left: 14px;
+  }
+  .section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #065f46 0%, #10b981 100%);
+  }
+  .chip-badge {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+  }
+  .table-row-hover:hover {
+    background: linear-gradient(90deg, rgba(236,253,245,0.8), rgba(255,255,255,0.8));
+  }
+  .divider-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(6,78,59,0.15), transparent);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    color: white;
+    border: 1px solid rgba(6, 78, 59, 0.2);
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+  }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-ghost {
+    background: white;
+    color: #065f46;
+    border: 1.5px solid #a7f3d0;
+    transition: all 0.2s ease;
+  }
+  .btn-ghost:hover {
+    background: #ecfdf5;
+    border-color: #059669;
+  }
+</style>
+</head>
+<body class="text-gray-800">
+
+<!-- Header -->
+<header class="gradient-header sticky top-0 z-40 shadow-lg border-b-2 border-emerald-400/30">
+  <div class="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between flex-wrap gap-4">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center border border-white/20 shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-emerald-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M7 14l4-4 4 4 5-5"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-white tracking-tight">ปฏิทินสินค้าเกษตรรายเดือน</h1>
+        <p class="text-sm text-emerald-100/90">จังหวัดลำปาง · ระบบวางแผนเพาะปลูกและการตลาด</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur border border-white/20">
+        <span class="w-2 h-2 rounded-full bg-emerald-300 pulse-dot"></span>
+        <span class="text-sm font-medium text-emerald-50">ข้อมูลปี 2568-2571</span>
+      </div>
+      <div class="text-right px-3 py-2 rounded-xl bg-white/10 backdrop-blur border border-white/20">
+        <div class="text-xs text-emerald-100/80">อัปเดตล่าสุด</div>
+        <div class="text-sm font-semibold text-white">12 พ.ย. 2569</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1600px] mx-auto px-6 py-6 space-y-6">
+
+  <!-- KPI Cards -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="glass-strong rounded-2xl p-5 card-hover">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-xs text-emerald-700 font-semibold uppercase tracking-wide">ผลผลิตรวมทั้งจังหวัด</p>
+          <p class="text-2xl font-bold text-emerald-900 mt-2" id="kpi-total">-</p>
+          <p class="text-xs text-emerald-600 mt-1">ตัน · ปี 2569</p>
+        </div>
+        <div class="kpi-icon w-11 h-11 rounded-xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7l9-4 9 4-9 4-9-4zm0 5l9 4 9-4M3 17l9 4 9-4"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="glass-strong rounded-2xl p-5 card-hover">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-xs text-emerald-700 font-semibold uppercase tracking-wide">จำนวนเกษตรกร</p>
+          <p class="text-2xl font-bold text-emerald-900 mt-2" id="kpi-farmers">-</p>
+          <p class="text-xs text-emerald-600 mt-1">ครัวเรือน</p>
+        </div>
+        <div class="kpi-icon w-11 h-11 rounded-xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-5a4 4 0 11-8 0 4 4 0 018 0zm6 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="glass-strong rounded-2xl p-5 card-hover">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-xs text-emerald-700 font-semibold uppercase tracking-wide">พื้นที่เพาะปลูก</p>
+          <p class="text-2xl font-bold text-emerald-900 mt-2" id="kpi-area">-</p>
+          <p class="text-xs text-emerald-600 mt-1">ไร่</p>
+        </div>
+        <div class="kpi-icon w-11 h-11 rounded-xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="glass-strong rounded-2xl p-5 card-hover">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-xs text-emerald-700 font-semibold uppercase tracking-wide">จำนวนรายการสินค้า</p>
+          <p class="text-2xl font-bold text-emerald-900 mt-2" id="kpi-products">-</p>
+          <p class="text-xs text-emerald-600 mt-1">รายการ · <span id="kpi-districts">-</span> อำเภอ</p>
+        </div>
+        <div class="kpi-icon w-11 h-11 rounded-xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="glass-strong rounded-2xl p-5">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+      </div>
+      <h3 class="font-bold text-emerald-900 section-title">ตัวกรองข้อมูล</h3>
+      <span class="ml-auto text-xs text-emerald-600 chip-badge px-3 py-1 rounded-full font-medium">เลือกเพื่อกรองข้อมูล</span>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div>
+        <label class="text-xs font-semibold text-emerald-800 mb-1.5 block">อำเภอ</label>
+        <select id="filterDistrict" class="filter-select w-full px-3 py-2 rounded-xl text-sm">
+          <option value="all">ทุกอำเภอ</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-emerald-800 mb-1.5 block">ตำบล</label>
+        <select id="filterSubdistrict" class="filter-select w-full px-3 py-2 rounded-xl text-sm">
+          <option value="all">ทุกตำบล</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-emerald-800 mb-1.5 block">ประเภทสินค้า</label>
+        <select id="filterType" class="filter-select w-full px-3 py-2 rounded-xl text-sm">
+          <option value="all">ทุกประเภท</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-emerald-800 mb-1.5 block">กลุ่มสินค้า</label>
+        <select id="filterGroup" class="filter-select w-full px-3 py-2 rounded-xl text-sm">
+          <option value="all">ทุกกลุ่ม</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-emerald-800 mb-1.5 block">ชนิดสินค้า</label>
+        <select id="filterKind" class="filter-select w-full px-3 py-2 rounded-xl text-sm">
+          <option value="all">ทุกชนิด</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-emerald-800 mb-1.5 block">สินค้า</label>
+        <select id="filterProduct" class="filter-select w-full px-3 py-2 rounded-xl text-sm">
+          <option value="all">ทุกสินค้า</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-emerald-800 mb-1.5 block">ปี</label>
+        <select id="filterYear" class="filter-select w-full px-3 py-2 rounded-xl text-sm">
+          <option value="2569">2569 (ปัจจุบัน)</option>
+          <option value="2568">2568</option>
+          <option value="2570">2570 (ประมาณการ)</option>
+          <option value="2571">2571 (ประมาณการ)</option>
+        </select>
+      </div>
+    </div>
+    <div class="divider-line my-4"></div>
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div class="flex items-center gap-2 flex-wrap" id="activeFilters"></div>
+      <button id="resetFilters" class="btn-ghost px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        ล้างตัวกรองทั้งหมด
+      </button>
+    </div>
+  </section>
+
+  <!-- Calendar Heatmap -->
+  <section class="glass-strong rounded-2xl p-5">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-emerald-900 section-title">ปฏิทินผลผลิตรายเดือน</h3>
+        <span class="text-xs text-emerald-600 chip-badge px-3 py-1 rounded-full font-medium">สีเข้ม = ผลผลิตมาก</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="text-emerald-700 font-medium">น้อย</span>
+        <div class="flex gap-1">
+          <div class="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-200"></div>
+          <div class="w-6 h-6 rounded-md bg-emerald-200"></div>
+          <div class="w-6 h-6 rounded-md bg-emerald-400"></div>
+          <div class="w-6 h-6 rounded-md bg-emerald-600"></div>
+          <div class="w-6 h-6 rounded-md bg-emerald-800"></div>
+        </div>
+        <span class="text-emerald-700 font-medium">มาก</span>
+      </div>
+    </div>
+    <div class="overflow-x-auto scrollbar-thin">
+      <div id="calendarGrid" class="min-w-[900px]"></div>
+    </div>
+  </section>
+
+  <!-- Charts Row 1 -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="glass-strong rounded-2xl p-5 lg:col-span-2">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4v16"/>
+            </svg>
+          </div>
+          <h3 class="font-bold text-emerald-900 section-title">แนวโน้มผลผลิตรายเดือน</h3>
+        </div>
+        <div class="flex gap-2">
+          <button data-view="group" class="chart-tab tab-active px-3 py-1.5 rounded-lg text-xs font-semibold">ตามกลุ่มสินค้า</button>
+          <button data-view="top" class="chart-tab px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">สินค้า Top 5</button>
+        </div>
+      </div>
+      <div style="height: 320px;"><canvas id="trendChart"></canvas></div>
+    </div>
+    <div class="glass-strong rounded-2xl p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-emerald-900 section-title">สัดส่วนกลุ่มสินค้า</h3>
+      </div>
+      <div style="height: 320px;"><canvas id="pieChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- Charts Row 2 -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="glass-strong rounded-2xl p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-emerald-900 section-title">ผลผลิตจำแนกตามอำเภอ</h3>
+      </div>
+      <div style="height: 320px;"><canvas id="districtChart"></canvas></div>
+    </div>
+    <div class="glass-strong rounded-2xl p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-emerald-900 section-title">การกระจายผลผลิต</h3>
+      </div>
+      <div style="height: 320px;"><canvas id="distributionChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- Top Products Table -->
+  <section class="glass-strong rounded-2xl p-5">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-emerald-900 section-title">ตารางสินค้าเกษตร · เรียงตามปริมาณผลผลิต</h3>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="relative">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input id="searchInput" type="text" placeholder="ค้นหาสินค้า..." class="filter-select pl-9 pr-3 py-2 rounded-xl text-sm w-56">
+        </div>
+      </div>
+    </div>
+    <div class="overflow-x-auto scrollbar-thin border border-emerald-100 rounded-xl">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs text-emerald-800 bg-gradient-to-r from-emerald-50 to-emerald-100/50 border-b-2 border-emerald-200">
+            <th class="py-3 px-3 font-bold">อันดับ</th>
+            <th class="py-3 px-3 font-bold">อำเภอ</th>
+            <th class="py-3 px-3 font-bold">ตำบล</th>
+            <th class="py-3 px-3 font-bold">กลุ่มสินค้า</th>
+            <th class="py-3 px-3 font-bold">ชนิด / สินค้า</th>
+            <th class="py-3 px-3 font-bold text-right">เกษตรกร</th>
+            <th class="py-3 px-3 font-bold text-right">พื้นที่ (ไร่)</th>
+            <th class="py-3 px-3 font-bold text-right">ผลผลิต (ตัน)</th>
+            <th class="py-3 px-3 font-bold">ช่วงผลผลิต</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+    <div class="flex items-center justify-between mt-4 text-xs text-emerald-700">
+      <span id="tableInfo" class="font-medium">-</span>
+      <div class="flex gap-2">
+        <button id="prevPage" class="btn-ghost px-3 py-1.5 rounded-lg font-semibold">ก่อนหน้า</button>
+        <button id="nextPage" class="btn-ghost px-3 py-1.5 rounded-lg font-semibold">ถัดไป</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Monthly Distribution Detail -->
+  <section class="glass-strong rounded-2xl p-5">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <h3 class="font-bold text-emerald-900 section-title">แผนผลผลิตตามช่วงเวลา · สำหรับวางแผนการตลาด</h3>
+    </div>
+    <div style="height: 360px;"><canvas id="stackedChart"></canvas></div>
+  </section>
+
+  <footer class="text-center text-xs text-emerald-700 py-6">
+    <div class="divider-line mb-4"></div>
+    <p class="font-medium">© 2569 ระบบปฏิทินสินค้าเกษตรจังหวัดลำปาง · พัฒนาเพื่อการวางแผนเพาะปลูกและการตลาดอย่างยั่งยืน</p>
+  </footer>
+</main>
+
+<script>
+/* ============ DATA ============ */
+const DB = [
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",13,188.12,376.24,376.24,0,376.24, [0,0,0,0,0,0,112.87,188.12,75.25,0,0,0]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",60,80,200,200,0,200, [30,40,50,40,40,0,0,0,0,0,0,0]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ไม้ผล","ขนุนหนัง","ขนุนหนัง",25,19,47.5,47.5,0,47.5, [0,0,0,9.5,14.25,14.25,9.5,0,0,0,0,0]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",4,10,15,15,0,15, [0,0,0,0,0,0,0,4.5,4.5,3,3,0]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ไม้ผล","มะละกอ","มะละกอพันธุ์อื่นๆ",14,21,210,210,0,210, [0,0,0,0,0,0,42,63,63,42,0,0]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",27,57,17.1,13.68,3.42,17.1, [0,0,0,0,0,0,0,9.41,7.69,0,0,0]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอขาวแตงกวา",22,30,249,249,0,249, [0,0,0,0,37.35,42.33,0,0,94.62,74.7,0,0]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",3,74,222,0,222,222, [13.32,13.32,17.76,22.2,24.42,24.42,22.2,19.98,17.76,15.54,15.54,15.54]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",1,32,22.4,22.4,0,23.07, [0,0,0,0,0,0,0,0,0,0,0,22.4]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",23,61.41,36.85,36.85,0,37.4, [0,0,0,0,0,0,0,0,0,3.68,27.64,5.53]],
+["เกาะคา","เกาะคา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",561,3488.62,2093.18,1779.2,313.98,2093.18, [0,0,0,0,0,0,0,0,0,209.32,1569.88,313.98]],
+["เกาะคา","ท่าผา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",439,2220.78,1332.47,1132.6,199.87,1332.47, [0,0,0,0,0,0,0,0,0,133.25,999.35,199.87]],
+["เกาะคา","ท่าผา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",55,156.71,94.03,94.03,0,94.03, [0,0,0,0,0,0,0,0,0,9.4,70.52,14.11]],
+["เกาะคา","ท่าผา","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอขาวพวง",20,20,166,166,0,166, [0,0,0,0,24.9,28.22,0,0,63.08,49.8,0,0]],
+["เกาะคา","ท่าผา","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอทองดี",30,50,415,415,0,415, [0,0,0,0,62.25,70.55,0,0,157.7,124.5,0,0]],
+["เกาะคา","ท่าผา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",53,24,7.2,5.76,1.44,7.2, [0,0,0,0,0,0,0,3.96,3.24,0,0,0]],
+["เกาะคา","ท่าผา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",4,20.6,41.2,41.2,0,41.2, [0,0,0,0,0,0,12.36,20.6,8.24,0,0,0]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",90,1077.1,2152.86,2152.86,0,2152.86, [0,0,0,0,0,0,645.86,1076.43,430.57,0,0,0]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",280,86,129,129,0,129, [0,0,0,0,0,0,0,38.7,38.7,25.8,25.8,0]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",56,183.08,54.23,43.38,10.85,54.83, [0,0,0,0,0,0,0,29.83,24.4,0,0,0]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอขาวพวง",120,38.75,321.63,321.63,0,321.63, [0,0,0,0,48.24,54.68,0,0,122.22,96.49,0,0]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอทองดี",120,70,581,581,0,581, [0,0,0,0,87.15,98.77,0,0,220.78,174.3,0,0]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",31,527.59,369.32,369.32,0,369.32, [0,0,0,0,0,0,0,0,0,110.79,221.59,36.94]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",128,322.26,193.36,193.36,0,193.36, [0,0,0,0,0,0,0,0,0,19.34,145.02,29]],
+["เกาะคา","นาแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1019,5996.37,3597.81,3058.14,539.67,3597.81, [0,0,0,0,0,0,0,0,0,359.78,2698.36,539.67]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",552,2428.92,1457.35,1238.75,218.6,1457.35, [0,0,0,0,0,0,0,0,0,145.74,1093.01,218.6]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",131,338.22,202.94,202.94,0,205.98, [0,0,0,0,0,0,0,0,0,20.29,152.2,30.45]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",41,588.12,411.69,411.69,0,411.69, [0,0,0,0,0,0,0,0,0,123.51,247.01,41.17]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",4,48,144,0,144,144, [8.64,8.64,11.52,14.4,15.84,15.84,14.4,12.96,11.52,10.08,10.08,10.08]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอทองดี",180,250,2075,2075,0,2075, [0,0,0,0,311.25,352.75,0,0,788.5,622.5,0,0]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",170,612,183.6,146.88,36.72,186.62, [0,0,0,0,0,0,0,100.98,82.62,0,0,0]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",70,120,180,180,0,180, [0,0,0,0,0,0,0,54,54,36,36,0]],
+["เกาะคา","นาแส่ง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",116,1370.67,2741.34,2741.34,0,2741.34, [0,0,0,0,0,0,822.4,1370.67,548.27,0,0,0]],
+["เกาะคา","ลำปางหลวง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",58,312.12,187.27,187.27,0,190.12, [0,0,0,0,0,0,0,0,0,18.73,140.45,28.09]],
+["เกาะคา","ลำปางหลวง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1003,6818.47,4091.08,3477.42,613.66,4091.08, [0,0,0,0,0,0,0,0,0,409.11,3068.31,613.66]],
+["เกาะคา","ลำปางหลวง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",590,4028.29,2416.97,2416.97,0,2455.64, [0,0,1933.58,483.39,0,0,0,0,0,0,0,0]],
+["เกาะคา","วังพร้าว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",817,3556.46,2133.88,1813.8,320.08,2133.88, [0,0,0,0,0,0,0,0,0,213.39,1600.41,320.08]],
+["เกาะคา","วังพร้าว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",292,804.15,482.49,482.49,0,482.49, [0,0,0,0,0,0,0,0,0,48.25,361.87,72.37]],
+["เกาะคา","วังพร้าว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",4,30.48,60.96,60.96,0,60.96, [0,0,0,0,0,0,18.29,30.48,12.19,0,0,0]],
+["เกาะคา","วังพร้าว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",59,182.41,54.73,43.78,10.95,54.73, [0,0,0,0,0,0,0,30.12,24.61,0,0,0]],
+["เกาะคา","วังพร้าว","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอพันธุ์อื่นๆ",140,80,664,664,0,664, [0,0,0,0,99.6,112.88,0,0,252.32,199.2,0,0]],
+["เกาะคา","วังพร้าว","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",3,16,48,0,48,48, [2.88,2.88,3.84,4.8,5.28,5.28,4.8,4.32,3.84,3.36,3.36,3.36]],
+["เกาะคา","วังพร้าว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",13,48.37,33.86,33.86,0,33.86, [0,0,0,0,0,0,0,0,0,10.16,20.32,3.38]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",1,6.5,4.55,4.55,0,4.55, [0,0,0,0,0,0,0,0,0,0,0,4.55]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอขาวพวง",40,45,373.5,373.5,0,373.5, [0,0,0,0,56.03,63.5,0,0,141.93,112.04,0,0]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",2,13.75,4.13,3.304,0.826,4.13, [0,0,0,0,0,0,0,2.26,1.87,0,0,0]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ไม้ผล","มะละกอ","มะละกอแขกดำ",5,6,60,60,0,60, [0,0,0,0,0,0,12,18,18,12,0,0]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วงเขียวเสวย",35,30,33,33,0,33, [0,0,0,0,0,0,8.25,14.85,9.9,0,0,0]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",10,5,7.5,7.5,0,7.5, [0,0,0,0,0,0,0,2.25,2.25,1.5,1.5,0]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",35,16,40,40,0,40, [6,8,10,8,8,0,0,0,0,0,0,0]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",47,151.04,90.63,90.63,0,91.99, [0,0,0,0,0,0,0,0,0,9.06,67.97,13.6]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",227,1290.87,774.52,658.342,116.178,774.52, [0,0,0,0,0,0,0,0,0,77.45,580.89,116.18]],
+["เกาะคา","ศาลา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",58,347.15,208.29,208.29,0,208.29, [0,0,166.63,41.66,0,0,0,0,0,0,0,0]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",129,642.25,385.35,385.35,0,385.35, [0,0,308.28,77.07,0,0,0,0,0,0,0,0]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",832,4515.21,2709.13,2302.76,406.37,2709.13, [0,0,0,0,0,0,0,0,0,270.91,2031.85,406.37]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",66,186.27,111.78,111.78,0,113.45, [0,0,0,0,0,0,0,0,0,11.18,83.84,16.76]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",32,62,155,155,0,155, [23.25,31,38.75,31,31,0,0,0,0,0,0,0]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",10,89,178,178,0,178, [0,0,0,0,0,0,53.4,89,35.6,0,0,0]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",98,479.66,143.91,115.13,28.78,143.91, [0,0,0,0,0,0,0,79.15,64.76,0,0,0]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",14,153.64,107.55,107.55,0,107.55, [0,0,0,0,0,0,0,0,0,32.26,64.54,10.75]],
+["เกาะคา","ใหม่พัฒนา","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",7,60,180,0,180,180, [10.8,10.8,14.4,18,19.8,19.8,18,16.2,14.4,12.6,12.6,12.6]],
+["เกาะคา","ไหล่หิน","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",21,67,201,0,201,201, [12.06,12.06,16.08,20.1,22.11,22.11,20.1,18.09,16.08,14.07,14.07,14.07]],
+["เกาะคา","ไหล่หิน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",32,381.54,267.08,267.08,0,271.88, [0,0,0,0,0,0,0,0,0,80.12,160.25,26.71]],
+["เกาะคา","ไหล่หิน","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",241,912.04,273.61,218.89,54.72,273.61, [0,0,0,0,0,0,0,150.49,123.12,0,0,0]],
+["เกาะคา","ไหล่หิน","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",70,787.39,1574.78,1574.78,0,1574.78, [0,0,0,0,0,0,472.43,787.39,314.96,0,0,0]],
+["เกาะคา","ไหล่หิน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",89,184.8,110.88,110.88,0,110.88, [0,0,0,0,0,0,0,0,0,11.09,83.16,16.63]],
+["เกาะคา","ไหล่หิน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",909,4936.96,2962.17,2517.84,444.33,2962.17, [0,0,0,0,0,0,0,0,0,296.13,2221.7,444.34]],
+["เกาะคา","ไหล่หิน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",90,443.5,266.1,266.1,0,266.1, [0,0,212.88,53.22,0,0,0,0,0,0,0,0]],
+["งาว","นาแก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",356,1698,1018.05,988.25,29.8,1018.05, [0,0,0,0,0,0,0,0,0,644,356,18.05]],
+["งาว","นาแก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",212,1204.7,722.72,701.14,21.58,721.8, [0,0,0,0,0,0,0,0,0,456.92,253,12.8]],
+["งาว","นาแก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",165,2420,1766.46,1715,51.46,1750, [176.65,706.58,706.58,176.65,0,0,0,0,0,0,0,0]],
+["งาว","นาแก","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",34,388,420,336,84,430, [84,126,126,84,0,0,0,0,0,0,0,0]],
+["งาว","นาแก","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",10,5,2.2,2.2,0,2, [0,0,0,0,0,0,0.44,1.1,0.66,0,0,0]],
+["งาว","นาแก","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",3,10,6,6,0,6, [0,0,0,0,0,0,0,2,3,1,0,0]],
+["งาว","นาแก","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",3,22.5,26,26,0,26, [2.2,2.2,2,2,2.2,2.2,2.2,2.2,2.2,2.2,2.2,2.2]],
+["งาว","นาแก","สินค้าพื้นฐาน","ไม้ผล","ทุเรียน","ทุเรียนหมอนทอง",3,22.78,3.6,3.6,0,3.75, [0,0,0,0,0,0,0,0,0,1.08,1.8,0.72]],
+["งาว","นาแก","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",55,56,6.9,6.9,0,6.5, [0,0,0,0,0,0,2.07,2.76,2.07,0,0,0]],
+["งาว","นาแก","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",19,64,1.3,1.3,0,2, [0,0,0,0,0,0,0,0.65,0.65,0,0,0]],
+["งาว","นาแก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",396,2512,2537,1775.9,761.1,2485, [0,0,0,0,0,0,0,0,0,279,1726,532]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",280,3580,3578,2506,1072,3508, [0,0,0,0,0,0,0,0,0,716,1431,1431]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",14,74,2.3,2.3,0,4, [0,0,0,0,0,0,0,0,0,1.15,1.15,0]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",25,158,36.9,36.9,0,37, [0,0,0,0,0,0,11.07,14.76,11.07,0,0,0]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",6,22.14,24,24,0,24, [2.1,2,2,2,2,2,2,2,1.8,2.1,2,2]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",3,15,8,8,0,8, [0,0,0,0,0,0,0,2,4,2,0,0]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",84,391,332.35,332.35,0,331, [0,0,0,0,0,0,66.47,166.18,99.7,0,0,0]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",36,399,867,693.6,173.4,865, [173.4,260.1,260.1,173.4,0,0,0,0,0,0,0,0]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",132,1490,1351.9,1312.5,39.4,1345, [0,0,0,0,0,0,135.2,540.75,540.75,135.2,0,0]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",68,304.81,182.8,177.4,5.4,182, [0,0,0,0,0,0,0,0,0,105.5,73.8,3.5]],
+["งาว","บ้านโป่ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",604,2580.33,1548.09,1501.75,46.34,1547.25, [0,0,0,0,0,0,0,0,0,893.25,625,29.84]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",529,2358.96,1415.36,1372.91,42.45,1415.36, [0,0,0,0,0,0,0,0,0,690.44,662.72,62.2]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",220,1254.2,752.51,729.94,22.57,752.42, [0,0,0,0,0,0,0,0,0,367.09,352.35,33.07]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",316,2862,3084.86,2995,89.86,3010, [0,0,0,0,0,0,308.48,1233.95,1233.95,308.48,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",38,254,216,172.8,43.2,220, [43.2,64.8,64.8,43.2,0,0,0,0,0,0,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",1,7,4.4,4.4,0,4.5, [0,0,0,0,0,0,0,1,2,1.4,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",52,53,65.77,65.77,0,63, [0,0,0,0,0,0,13.15,32.87,19.75,0,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",15,53.69,50,50,0,50, [4,4,4.2,4.2,4.2,4.2,4.2,4.2,4.4,4,4.2,4.2]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","ไม้ผล","เงาะ","เงาะโรงเรียน",25,235.92,85.3,85.3,0,85.5, [0,0,0,0,0,0,16,27.3,30,12,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","พืชผัก","ขิง","ขิง",58,596,715.2,715.2,0,705, [143.04,286.08,214.56,71.52,0,0,0,0,0,0,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",25,112,21,21,0,21, [0,0,0,0,0,0,6.3,8.4,6.3,0,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",43,253.75,2.5,2.5,0,4, [0,0,0,0,0,0,0,1.25,1.25,0,0,0]],
+["งาว","บ้านร้อง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",708,6969,8216,5751.2,2464.8,8051, [0,0,0,0,0,0,0,0,0,985,5504,1727]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",549,8790,10548,7383.6,3164.4,10337, [0,0,0,0,0,0,0,0,0,2679,4220,3649]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",17,66.48,1,1,0,2, [0,0,0,0,0,0,0,0.5,0.5,0,0,0]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",26,145,18.3,18.3,0,18.3, [0,0,0,0,0,0,5.49,7.32,5.49,0,0,0]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","พืชผัก","ขิง","ขิง",20,400,240,240,0,240, [48,120,72,0,0,0,0,0,0,0,0,0]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",5,27.85,24,24,0,24, [2.1,2,1.8,2,2,2,2,2,2,2.1,2,2]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",20,68,72.25,72.25,0,69, [0,0,0,0,0,0,14.45,36.12,21.68,0,0,0]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",16,74,138,110.4,27.6,141, [27.6,41.4,41.4,27.6,0,0,0,0,0,0,0,0]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",161,2664,2504,2424.9,79.1,3500, [0,0,0,0,0,0,250,1002,1002,250,0,0]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",156,1220.84,732.47,710.51,21.96,732, [0,0,0,0,0,0,0,0,0,479.21,226,27.26]],
+["งาว","บ้านหวด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",85,329.37,197.61,191.69,5.92,198, [0,0,0,0,0,0,0,0,0,79.28,110.07,8.26]],
+["งาว","บ้านแหง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1150,8606.71,5164.04,5009.11,154.93,5164.04, [0,0,0,0,0,0,0,0,0,1397.04,3673,94]],
+["งาว","บ้านแหง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",130,343,377.34,366.36,10.98,380, [0,0,0,0,0,0,37.73,150.94,150.94,37.73,0,0]],
+["งาว","บ้านแหง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",32,191,123,98.4,24.6,130, [24.6,36.9,36.9,24.6,0,0,0,0,0,0,0,0]],
+["งาว","บ้านแหง","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",306,938,1385.47,1385.47,0,1382, [0,0,0,0,0,0,277.1,692.73,415.64,0,0,0]],
+["งาว","บ้านแหง","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",16,141,15.9,15.9,0,16, [0,0,0,0,0,0,4.77,6.36,4.77,0,0,0]],
+["งาว","บ้านแหง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",8,24.99,0.5,0.5,0,2, [0,0,0,0,0,0,0,0.25,0.25,0,0,0]],
+["งาว","บ้านแหง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",137,3269,3922.8,2746,1176.8,3845, [0,0,0,0,0,0,0,0,0,997.8,1569,1356]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",210,3705,4446,3112.2,1333.8,4356, [0,0,0,0,0,0,0,0,0,1128,1780,1538]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",12,45.82,0.8,0.8,0,2, [0,0,0,0,0,0,0,0.4,0.4,0,0,0]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",60,40,7.2,7.2,0,7, [0,0,0,0,0,0,2.16,2.88,2.16,0,0,0]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","ไม้ผล","ทุเรียน","ทุเรียนหมอนทอง",3,59.25,17.56,17.56,0,17.8, [0,0,0,0,0,0,0,0,0,5.27,8.78,3.51]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",65,125,132.8,132.8,0,132, [0,0,0,0,0,0,26.56,66.4,39.84,0,0,0]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",28,153,294,235.2,58.8,300, [58.8,88.2,88.2,58.8,0,0,0,0,0,0,0,0]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",166,2745,2478.5,2406.3,72.2,2500, [0,0,0,0,0,0,247.85,991.4,991.4,247.85,0,0]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",94,593.72,356.32,345.55,10.77,356, [0,0,0,0,0,0,0,0,0,233.06,110,13.26]],
+["งาว","บ้านอ้อน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",490,2697.02,1618.21,1569.67,48.54,1620, [0,0,0,0,0,0,0,0,0,1058.7,499.27,60.24]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",433,2125.07,1275.05,1236.8,38.25,1275.05, [0,0,0,0,0,0,0,0,0,425.09,733.66,116.29]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",150,689.88,413.93,401.51,12.42,413.93, [0,0,0,0,0,0,0,0,0,138,238.17,37.75]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",220,3282,2366.94,2298,68.94,2340, [0,0,0,0,0,0,236.69,946.78,946.78,236.69,0,0]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",21,180,234,187.2,46.8,235, [46.8,70.2,70.2,46.8,0,0,0,0,0,0,0,0]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",1,31,31.6,31.6,0,31.5, [0,0,0,0,0,0,0,10,15,6.6,0,0]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","พืชผัก","ขิง","ขิง",13,33,39.6,39.6,0,39, [7.92,15.84,11.88,3.96,0,0,0,0,0,0,0,0]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","ไม้ผล","ทุเรียน","ทุเรียนหมอนทอง",23,110.75,13.2,13.2,0,13.15, [0,0,0,0,0,0,0,0,0,3.96,6.6,2.64]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",6,14,16,16,0,16, [1.3,1,1.4,1.3,1.3,1.3,1.3,1.3,1.3,1.5,1.5,1.5]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",40,120,25.5,25.5,0,25.3, [0,0,0,0,0,0,7.65,10.2,7.65,0,0,0]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",72,362.65,3.6,3.6,0,4, [0,0,0,0,0,0,0,1.8,1.8,0,0,0]],
+["งาว","ปงเตา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",195,3010,3010,2107,903,2950, [0,0,0,0,0,0,0,0,0,602,1204,1204]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",563,844,9840,6888,2952,9643, [0,0,0,0,0,0,0,0,0,1082,6594,2164]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",4,14.25,2.4,2.4,0,2.4, [0,0,0,0,0,0,0.72,0.96,0.72,0,0,0]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",7,20.75,16,16,0,16, [1.5,1.5,1.3,1.2,1.2,1.2,1.2,1.2,1.2,1.5,1.5,1.5]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",120,250,269.75,269.75,0,268, [0,0,0,0,0,0,53.95,134.875,80.925,0,0,0]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",185,814,822,657.6,164.4,830, [164.4,246.6,246.6,164.4,0,0,0,0,0,0,0,0]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",573,1700,1724.74,1674.5,50.24,1720, [0,0,0,0,0,0,172.47,689.89,689.89,172.47,0,0]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",6,25.53,15.32,14.86,0.46,15.32, [0,0,0,0,0,0,0,0,0,1.57,13.04,0.72]],
+["งาว","แม่ตีบ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",662,3842.36,2305.41,2236.25,69.16,2305.41, [0,0,0,0,0,0,0,0,0,235.82,1961.95,107.64]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",413,2207.9,1324.74,1285,39.74,1324.74, [0,0,0,0,0,0,0,0,0,533.56,714.18,77]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",44,174.21,104.53,101.39,3.14,104.53, [0,0,0,0,0,0,0,0,0,42.1,56.35,6.08]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",110,350,355.81,345.45,10.36,350, [0,0,0,0,0,0,35.58,142.33,142.33,35.58,0,0]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",9,60,90,72,18,100, [18,27,27,18,0,0,0,0,0,0,0,0]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",100,225,245,245,0,242, [0,0,0,0,0,0,49,122.5,73.5,0,0,0]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",10,11,8,8,0,8, [0.8,0.8,0.8,0.8,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",35,262,75,75,0,75, [0,0,0,0,0,0,22.5,30,22.5,0,0,0]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",201,1081,1091,764.4,326.6,1069, [0,0,0,0,0,0,0,0,0,120,731,240]],
+["งาว","หลวงใต้","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",21,82.49,0.5,0.5,0,2, [0,0,0,0,0,0,0,0.25,0.25,0,0,0]],
+["งาว","หลวงเหนือ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",85,510,510,357,153,500, [0,0,0,0,0,0,0,0,0,56.1,341.7,112.2]],
+["งาว","หลวงเหนือ","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",20,180,30.9,30.9,0,30, [0,0,0,0,0,0,9.27,12.36,9.27,0,0,0]],
+["งาว","หลวงเหนือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",4,13.48,8.08,7.85,0.23,8.2, [0,0,0,0,0,0,0,0,0,1.53,5.83,0.72]],
+["งาว","หลวงเหนือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",244,1547.82,929,900.83,28.17,929, [0,0,0,0,0,0,0,0,0,176,670,83]],
+["แจ้ห่ม","แจ้ห่ม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",841,3455,1896,1896,0,0, [0,0,0,0,0,0,0,0,0,200,1600,96]],
+["แจ้ห่ม","แจ้ห่ม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",26,55.11,35,35,0,39, [0,0,0,0,0,0,0,0,0,13,22,0]],
+["แจ้ห่ม","แจ้ห่ม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",244,1005,0,0,0,561, [0,0,0,0,0,0,0,0,0,0,0,0]],
+["แจ้ห่ม","แจ้ห่ม","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",1,13,0,0,0,30, [0,0,0,0,0,0,0,0,0,0,0,0]],
+["แจ้ห่ม","แจ้ห่ม","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",54,240,168,168,0,0, [0,0,0,0,0,0,0,0,0,8,60,100]],
+["แจ้ห่ม","แจ้ห่ม","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",12,30,5,5,0,9, [0,0,0,0,0,0,0,5,0,0,0,0]],
+["แจ้ห่ม","ทุ่งผึ้ง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",36,146.59,6,1,5,9, [0,0,0,0,0,0,0,4,2,0,0,0]],
+["แจ้ห่ม","ทุ่งผึ้ง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",328,4776.4,3715,3715,0,3700, [0,0,0,0,0,0,0,0,0,845,1230,1640]],
+["แจ้ห่ม","ทุ่งผึ้ง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",18,116,0,0,0,266.8, [0,0,0,0,0,0,0,0,0,0,0,0]],
+["แจ้ห่ม","ทุ่งผึ้ง","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว มะนาวแป้น",240,900,1388,140,1248,1420, [100,100,25,30,50,145,168,182,184,175,129,100]],
+["แจ้ห่ม","ทุ่งผึ้ง","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",66,268.32,447,45,402,430, [0,0,0,0,0,0,0,0,0,40,107,110]],
+["แจ้ห่ม","ทุ่งผึ้ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",625,2378.52,1028,1028,0,1030, [0,0,0,0,0,0,0,0,0,328,600,100]],
+["แจ้ห่ม","ทุ่งผึ้ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",14,30,12.7,12.7,0,12.5, [0,0,0,0,0,0,0,0,0,2.7,7.5,2.5]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",26,50,26.45,26.45,0,28, [0,0,0,0,0,0,0,0,0,8.4,14.05,4]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",645,3060,1618,1618,0,1630, [0,0,0,0,0,0,0,0,0,480,1028,110]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วงแก้วลืมรัง",48,280,31.625,3.625,28,35, [0,0,0,0,0,0,0,10,11,10.625,0,0]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",13,76,174,0,174,150, [0,0,0,0,0,0,0,0,174,0,0,0]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","พืชไร่","สับปะรดโรงงาน","สับปะรดโรงงาน/ปัตตาเวีย",43,318,489,108,381,505, [0,0,0,0,0,0,0,0,0,20,40,50]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",230,3331,2410,2410,0,2450, [0,0,0,0,0,0,0,0,0,310,900,1200]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",32,90,51.8,0,51.8,52.5, [3.9,3.8,3.4,3.5,3.7,4.8,4.2,4.5,4.8,5,5.2,5]],
+["แจ้ห่ม","บ้านสา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",65,56,13.72,10,3.72,22.3, [0,0,0,0,0,0,0,6.7,7.02,0,0,0]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",30,78,32.76,32.76,0,43.5, [0,0,0,0,0,0,0,28,4.76,0,0,0]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","ไม้ผล","ส้มเขียวหวาน","ส้มเขียวหวานสีทอง",18,166,118.9,118.9,0,120, [0,0,0,0,0,0,0,0,0,60,58.9,0]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","ไม้ผล","ลิ้นจี่","ลิ้นจี่จักรพรรดิ์",12,115,34,34,0,35, [0,0,0,0,0,0,0,20,14,0,0,0]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",78,1007.84,731,731,0,730, [0,0,0,0,0,0,0,0,0,81,230,420]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",31,285,850,850,0,150, [0,0,0,0,0,0,0,0,0,150,700,0]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วงแก้วลืมรัง",50,170,43,25,18,450, [0,0,0,0,0,0,0,23,20,0,0,0]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",731,3636.72,1923,1923,0,1905, [0,0,0,0,0,0,0,0,0,423,1200,300]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",35,56.93,30,30,0,33, [0,0,0,0,0,0,0,0,0,10,15,5]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",224,2947.44,2144,2144,0,2150, [0,0,0,0,0,0,341,540,1040,223,0,0]],
+["แจ้ห่ม","ปงดอน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",337,1386.22,772,772,0,790, [0,0,0,0,0,0,0,432,340,0,0,0]],
+["แจ้ห่ม","เมืองมาย","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",388,5711.73,4277,4277,0,0, [0,0,0,0,0,0,0,0,0,1024,2124,1129]],
+["แจ้ห่ม","เมืองมาย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",6,35,18.5,18.5,0,18.5, [0,0,0,0,0,0,0,0,0,2.5,10.5,5.5]],
+["แจ้ห่ม","เมืองมาย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",509,2031.15,1074,1074,0,1050, [0,0,0,0,0,0,0,0,0,329,605,140]],
+["แจ้ห่ม","เมืองมาย","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",206,3469.15,2594,2594,0,2610, [0,0,0,0,0,0,0,0,0,590,824,1180]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",57,237.94,83,83,0,95, [0,0,0,0,0,0,0,53,30,0,0,0]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ไม้ผล","ส้มโอ","ส้มโอทองดี",10,50,4.8,4.8,0,4.8, [0,0,0,0,0,0,0,0,0,2.5,2.3,0]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",81,629.16,453.62,453.62,0,465, [0,0,0,0,0,0,0,0,0,153,300.62,0]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",8,20,47.8,47.8,0,18, [3,3,4.5,6,6,4.5,4,3.8,3.5,3.5,3,3]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",30,25,66.9,66.9,0,69, [4,4,5,5,5.2,5.2,5.5,5.6,5.5,7.3,7.3,7.3]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",6,20,19.5,19.5,0,20, [0,0,0,0,0,0,0,3.5,3.5,4.5,2.5,2.5]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วงแก้วลืมรัง",30,60,12,12,0,13.5, [0,0,0,0,0,0,0,4.2,4.8,3,0,0]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",10,60,131,131,0,141, [0,0,0,0,0,0,0,0,0,51,80,0]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",977,6035,2993,2993,0,3050, [0,0,0,0,0,0,0,0,0,1163,1538,292]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",13,38,18.85,18.85,0,24, [0,0,0,0,0,0,0,0,0,5.05,10.5,3.3]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",72,608.39,438,438,0,435, [0,0,0,0,0,0,0,0,0,128,251,59]],
+["แจ้ห่ม","แม่สุก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",270,1310,0,0,0,725, [0,0,0,0,0,0,0,0,0,0,0,0]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",106,484.51,193,193,0,195, [0,0,0,0,0,0,0,145,48,0,0,0]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",908,4496.33,2377,2377,0,2370, [0,0,0,0,0,0,0,0,0,857,1225,295]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",33,57.61,30.5,30.5,0,30, [0,0,0,0,0,0,0,0,0,10.4,16.2,3.9]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",5,40,30,30,0,74, [0,0,0,0,0,0,0,0,0,0,30,0]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วงแก้วลืมรัง",12,100,6,6,0,4.2, [0,0,0,0,0,0,0,2.5,2,1.5,0,0]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","ไม้ผล","ทุเรียน","ทุเรียนหมอนทอง",3,15.39,10.5,10.5,0,14, [0,0,0,0,0,0,0,0,0,3.5,7,0]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",7,40,56.5,56.5,0,59, [4,6,10.5,8,7,4.5,4.5,4.5,4.5,3,0,0]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",42,256,191,191,0,190, [0,0,0,0,0,0,0,0,0,11,40,140]],
+["แจ้ห่ม","วิเชตนคร","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",33,102.36,25,25,0,40, [0,0,0,0,0,0,0,20,5,0,0,0]],
+["เถิน","เถินบุรี","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",67,42,40,40,0,40, [0,0,0,0,0,0,0,10,30,0,0,0]],
+["เถิน","เถินบุรี","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",28,22,22,22,0,22, [8,8,3,0,0,0,0,0,0,3,0,0]],
+["เถิน","เถินบุรี","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",23,12,12,12,0,12, [0,0,0,0,0,0,4,5,3,0,0,0]],
+["เถิน","เถินบุรี","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",68,78,56,56,0,56, [0,0,0,0,0,0,0,8,16,16,8,8]],
+["เถิน","เถินบุรี","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",947,4896,2447,2447,0,2447, [0,0,0,0,0,0,0,0,0,6,2385,56]],
+["เถิน","เถินบุรี","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",461,1286,642,642,0,642, [0,0,0,0,0,0,0,0,0,7,613,22]],
+["เถิน","เถินบุรี","สินค้าพื้นฐาน","พืชไร่","ถั่วเหลือง","ถั่วเหลือง รุ่น 2",55,305,78,78,0,78, [0,0,0,0,0,0,25,30,23,0,0,0]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",5,30,15,15,0,15, [0,0,0,0,0,0,0,15,0,0,0,0]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",70,375,360,360,0,360, [80,110,110,60,0,0,0,0,0,0,0,0]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",833,4517,2258,2258,0,2258, [0,0,0,0,0,0,0,0,0,15,2177,66]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",426,2072,1036,1036,0,1036, [0,0,0,0,0,0,0,0,0,0,992,44]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",33,20,26,26,0,26, [0,0,0,0,0,0,0,16,8,2,0,0]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",15,89,267,267,0,267, [0,0,0,0,0,0,0,0,0,50,50,167]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",36,41,38,38,0,0, [0,0,0,0,0,0,0,15,23,0,0,0]],
+["เถิน","นาโป่ง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",66,592,580,580,0,580, [0,0,0,0,0,0,0,0,0,100,250,230]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",15,63,57,57,0,57, [0,0,0,0,0,0,0,0,0,12,32,13]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",1,12,34,0,34,34, [1,1,1,1,1,3,5,5,5,5,3,3]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",139,103,95,95,0,95, [0,0,0,0,0,0,0,35,60,0,0,0]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ไม้ผล","ส้มเขียวหวาน","ส้มเขียวหวานโชกุน(สายน้ำผึ้ง)",7,20,39,39,0,39, [12,14,13,0,0,0,0,0,0,0,0,0]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",11,63,189,189,0,189, [0,0,0,0,0,0,0,0,0,50,50,89]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",46,63,63,63,0,63, [0,0,0,0,0,0,0,13,15,15,10,10]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",16,25,26,26,0,26, [0,0,0,0,0,0,8,10,8,0,0,0]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",18,32,32,32,0,32, [13,13,3,0,0,0,0,0,0,3,0,0]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",203,799,400,400,0,400, [0,0,0,0,0,0,0,0,0,15,326,59]],
+["เถิน","แม่ถอด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",628,2508,1253,1253,0,1253, [0,0,0,0,0,0,0,0,0,47,1020,186]],
+["เถิน","แม่ปะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",399,1605,802,802,0,802, [0,0,0,0,0,0,0,0,0,108,670,24]],
+["เถิน","แม่ปะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",146,577,289,289,0,289, [0,0,0,0,0,0,0,0,0,5,260,24]],
+["เถิน","แม่ปะ","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",32,20,20,20,0,20, [0,0,0,0,0,0,0,4,5,5,3,3]],
+["เถิน","แม่ปะ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",63,47,45,45,0,45, [0,0,0,0,0,0,0,15,30,0,0,0]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",7,53.5,165,0,165,165, [16,16,16,13,13,13,13,13,13,13,13,13]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",3,30,28,28,0,28, [0,0,0,0,0,0,0,0,0,8,12,8]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",117,227,217,217,0,217, [0,0,0,0,0,0,0,90,127,0,0,0]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",23,18,19,19,0,19, [0,0,0,0,0,0,0,3,5,5,3,3]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","ไม้ผล","ทุเรียน","ทุเรียนหมอนทอง",5,3,3,3,0,3, [0,0,0,0,0,0,0,0,0,1.5,1.5,0]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",38,51,50,50,0,50, [20,20,5,0,0,0,0,0,0,5,0,0]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",5,45,135,135,0,135, [0,0,0,0,0,0,0,0,0,30,85,20]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",34,52,30,30,0,30, [0,0,0,0,0,0,0,15,15,0,0,0]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",88,198,96,96,0,96, [0,0,0,0,0,0,0,0,0,0,71,25]],
+["เถิน","แม่มอก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",604,2480,1275,1275,0,1275, [0,0,0,0,0,0,0,0,0,103,976,196]],
+["เถิน","แม่วะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",521,1864,933,933,0,933, [0,0,0,0,0,0,0,0,0,59,859,15]],
+["เถิน","แม่วะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",634,2738,1369,1369,0,1369, [0,0,0,0,0,0,0,0,0,35,1294,40]],
+["เถิน","แม่วะ","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",40,20,20,20,0,20, [8,8,2,0,0,0,0,0,0,2,0,0]],
+["เถิน","แม่วะ","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",56,40,21,21,0,21, [0,0,0,0,0,0,0,3,6,6,3,3]],
+["เถิน","แม่วะ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",58,34,33,33,0,33, [0,0,0,0,0,0,0,13,20,0,0,0]],
+["เถิน","ล้อมแรด","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",138,96,90,90,0,90, [0,0,0,0,0,0,0,30,60,0,0,0]],
+["เถิน","ล้อมแรด","สินค้าพื้นฐาน","ไม้ผล","มะนาว","มะนาว",123,136,56,56,0,60, [0,0,0,0,0,0,0,15,15,10,8,8]],
+["เถิน","ล้อมแรด","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",37,50,145,145,0,145, [15,15,5,5,5,15,15,15,15,15,15,10]],
+["เถิน","ล้อมแรด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",451,2827,1413,1413,0,1413, [0,0,0,0,0,0,0,0,0,0,1335,78]],
+["เถิน","ล้อมแรด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",223,830,416,416,0,416, [0,0,0,0,0,0,0,0,0,4,408,4]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1282,7062,3528,3528,0,3528, [0,0,0,0,0,0,0,0,0,221,3111,196]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",297,1007,504,504,0,504, [0,0,0,0,0,0,0,0,0,23,444,37]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",460,3476,1738,1738,0,1738, [0,0,0,0,0,0,0,348,1386,4,0,0]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",25,60,60,60,0,60, [20,20,10,0,0,0,0,10,0,0,0,0]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ไม้ผล","ทุเรียน","ทุเรียนหมอนทอง",13,18,7.2,7.2,0,7.2, [0,0,0,0,0,0,0,0,0,3.6,3.6,0]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วง",21,42,42,42,0,42, [0,0,0,0,0,0,13,16,13,0,0,0]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","พืชไร่","อ้อยโรงงาน","อ้อยโรงงาน",38,490,5000,0,5000,5000, [2300,2300,200,0,0,0,0,200,0,0,0,0]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",257,2535,7500,7500,0,7500, [0,0,0,0,0,0,0,0,0,500,500,1300]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",145,180,170,170,0,0, [0,0,0,0,0,0,0,50,120,0,0,0]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",46,240,297,0,297,297, [10,28,28,10,10,40,80,40,16,15,10,10]],
+["เถิน","เวียงมอก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",19,158,152,152,0,152, [0,0,0,0,0,0,0,0,0,20,50,82]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","ไม้ยืนต้น","กาแฟอาราบิก้า","กาแฟอาราบิก้า",790,11857,10671.3,5335.65,5335.65,10671.3, [0,0,0,0,0,0,0,0,0,3734.96,3201.39,2667.82]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",41,120,48,48,0,48, [0,0,0,0,0,0,0,48,0,0,0,0]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",120,916,2748,2748,0,2748, [0,0,0,0,0,0,549.6,1374,824.4,0,0,0]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",627,3386,2031.6,2031.6,0,2031.6, [0,0,0,0,0,0,0,0,0,812.64,1117.38,101.58]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",231,1063,637.8,637.8,0,637.8, [0,0,0,0,0,0,0,287.01,318.9,31.89,0,0]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",161,1110,666,666,0,666, [0,0,0,0,0,0,0,0,0,266.4,366.3,33.3]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",70,315,252,252,0,252, [0,0,0,0,0,0,0,0,0,100.8,151.2,0]],
+["เมืองปาน","แจ้ซ้อน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",150,1240,992,992,0,992, [0,0,0,0,0,0,0,0,0,595.2,396.8,0]],
+["เมืองปาน","ทุ่งกว๋าว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",68,453,362.4,362.4,0,362.4, [0,0,0,0,0,0,0,0,0,217.44,144.96,0]],
+["เมืองปาน","ทุ่งกว๋าว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",334,1339,1071.2,1071.2,0,1071.2, [0,0,0,0,0,0,0,428.48,642.72,0,0,0]],
+["เมืองปาน","ทุ่งกว๋าว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",63,94,56.4,56.4,0,56.4, [0,0,0,0,0,0,0,0,0,22.56,31.02,2.82]],
+["เมืองปาน","ทุ่งกว๋าว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1520,6138,3682.8,3682.8,0,3682.8, [0,0,0,0,0,0,0,0,0,1473.12,2025.54,184.14]],
+["เมืองปาน","ทุ่งกว๋าว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",48,520,1560,1560,0,1560, [0,0,0,0,0,0,312,780,468,0,0,0]],
+["เมืองปาน","ทุ่งกว๋าว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",24,69,27.6,27.6,0,27.6, [0,0,0,0,0,0,0,27.6,0,0,0,0]],
+["เมืองปาน","ทุ่งกว๋าว","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",7,111,111,111,0,111, [0,0,0,0,0,0,28,28,28,27,0,0]],
+["เมืองปาน","บ้านขอ","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",19,83,83,83,0,83, [0,0,0,0,0,0,21,21,21,20,0,0]],
+["เมืองปาน","บ้านขอ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",51,166,66.4,66.4,0,66.4, [0,0,0,0,0,0,0,66.4,0,0,0,0]],
+["เมืองปาน","บ้านขอ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",242,1741,5223,5223,0,5223, [0,0,0,0,0,0,1044.6,2611.5,1566.9,0,0,0]],
+["เมืองปาน","บ้านขอ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1246,6278,3766.8,3766.8,0,3766.8, [0,0,0,0,0,0,0,0,0,1506.72,2071.74,188.34]],
+["เมืองปาน","บ้านขอ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",374,1499,1199.2,1199.2,0,1199.2, [0,0,0,0,0,0,0,479.68,719.52,0,0,0]],
+["เมืองปาน","บ้านขอ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",281,1612,1289.6,1289.6,0,1289.6, [0,0,0,0,0,0,0,0,0,773.76,515.84,0]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",77,534,427.2,427.2,0,427.2, [0,0,0,0,0,0,0,0,0,256.32,170.88,0]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",100,574,459.2,459.2,0,459.2, [0,0,0,0,0,0,0,183.68,275.52,0,0,0]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",38,93,55.8,55.8,0,55.8, [0,0,0,0,0,0,0,0,0,22.32,30.69,2.79]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",237,920,552,552,0,552, [0,0,0,0,0,0,0,248.4,276,27.6,0,0]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",577,2776,1665.6,1665.6,0,1665.6, [0,0,0,0,0,0,0,0,0,666.24,916.08,83.28]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",95,312,936,936,0,936, [0,0,0,0,0,0,0,187.2,468,280.8,0,0]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",17,42,16.8,16.8,0,16.8, [0,0,0,0,0,0,0,16.8,0,0,0,0]],
+["เมืองปาน","เมืองปาน","สินค้าพื้นฐาน","ไม้ยืนต้น","กาแฟอาราบิก้า","กาแฟอาราบิก้า",34,279,251.1,125.55,125.55,251.1, [0,0,0,0,0,0,0,0,0,87.89,75.33,62.77]],
+["เมืองปาน","หัวเมือง","สินค้าพื้นฐาน","ไม้ยืนต้น","กาแฟอาราบิก้า","กาแฟอาราบิก้า",59,590,531,265.5,265.5,531, [0,0,0,0,0,0,0,0,0,185.85,159.3,132.75]],
+["เมืองปาน","หัวเมือง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",11,46,18.4,18.4,0,18.4, [0,0,0,0,0,0,0,18.4,0,0,0,0]],
+["เมืองปาน","หัวเมือง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",36,285,855,855,0,855, [0,0,0,0,0,0,171,427.5,256.5,0,0,0]],
+["เมืองปาน","หัวเมือง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",474,1867,1120.2,1120.2,0,1120.2, [0,0,0,0,0,0,0,0,0,448.08,616.11,56.01]],
+["เมืองปาน","หัวเมือง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",175,598,358.8,358.8,0,358.8, [0,0,0,0,0,0,0,161.46,179.4,17.94,0,0]],
+["เมืองปาน","หัวเมือง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",114,554,332.4,332.4,0,332.4, [0,0,0,0,0,0,0,0,0,132.96,182.82,16.62]],
+["เมืองปาน","หัวเมือง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",223,2210,1768,1768,0,1768, [0,0,0,0,0,0,0,0,0,1060.8,707.2,0]],
+["เมืองลำปาง","กล้วยแพะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",223,427,224.18,224.18,0,211.37, [0,0,0,0,0,0,0,0,0,44.84,156.92,22.42]],
+["เมืองลำปาง","กล้วยแพะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1029,3789.33,1989.4,1989.4,0,1875.71, [0,0,0,0,0,0,0,0,0,397.88,1392.58,198.94]],
+["เมืองลำปาง","กล้วยแพะ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",5,80,242.97,24.3,218.67,230.8, [0,0,0,0,0,0,85.04,85.04,72.89,0,0,0]],
+["เมืองลำปาง","กล้วยแพะ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",1,8,0.96,0.19,0.77,0.96, [0,0,0,0,0,0,0,0.77,0.19,0,0,0]],
+["เมืองลำปาง","กล้วยแพะ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",8,50,52.5,0,52.5,35.76, [0,0,0,0,0,0,0,0,0,10.5,36.75,5.25]],
+["เมืองลำปาง","ชมพู","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",3,20,21,0,21,14.3, [0,0,0,0,0,0,0,0,0,4.2,14.7,2.1]],
+["เมืองลำปาง","ชมพู","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",30,35,4.2,0.84,3.36,4.2, [0,0,0,0,0,0,0,3.36,0.84,0,0,0]],
+["เมืองลำปาง","ชมพู","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",2,20,60.74,6.07,54.67,57.71, [0,0,0,0,0,0,21.26,21.26,18.22,0,0,0]],
+["เมืองลำปาง","ชมพู","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",539,3609.36,1894.91,1894.91,0,1786.63, [0,0,0,0,0,0,0,0,0,378.98,1326.44,189.49]],
+["เมืองลำปาง","ชมพู","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",80,287,150.68,150.68,0,142.07, [0,0,0,0,0,0,0,0,0,30.14,105.47,15.07]],
+["เมืองลำปาง","ชมพู","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",330,2500,1312.5,1312.5,0,1237.5, [0,0,0,0,0,0,0,262.5,918.75,131.25,0,0]],
+["เมืองลำปาง","ต้นธงชัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",539,4164,2186.1,2186.1,0,2061.19, [0,0,0,0,0,0,0,437.22,1530.27,218.61,0,0]],
+["เมืองลำปาง","ต้นธงชัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",131,706,370.66,370.66,0,349.47, [0,0,0,0,0,0,0,0,0,74.13,259.46,37.07]],
+["เมืองลำปาง","ต้นธงชัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",645,5023,2637.08,2637.08,0,2486.39, [0,0,0,0,0,0,0,0,0,527.42,1845.95,263.71]],
+["เมืองลำปาง","ต้นธงชัย","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",59,950,2885.15,288.52,2596.63,2740.75, [0,0,0,0,0,0,1009.8,1009.8,865.55,0,0,0]],
+["เมืองลำปาง","ต้นธงชัย","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",3,5,0.6,0.12,0.48,0.6, [0,0,0,0,0,0,0,0.48,0.12,0,0,0]],
+["เมืองลำปาง","ต้นธงชัย","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",36,600,630,0,630,429, [0,0,0,0,0,0,0,0,0,126,441,63]],
+["เมืองลำปาง","ทุ่งฝาย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",677,5259.59,2761.29,2761.29,0,2603.5, [0,0,0,0,0,0,0,0,0,552.26,1932.9,276.13]],
+["เมืองลำปาง","ทุ่งฝาย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",53,983,516.08,516.08,0,486.59, [0,0,0,0,0,0,0,0,0,103.22,361.25,51.61]],
+["เมืองลำปาง","ทุ่งฝาย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",668,5426,2848.66,2848.66,0,2685.87, [0,0,0,0,0,0,0,569.73,1994.06,284.87,0,0]],
+["เมืองลำปาง","นิคมพัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",525,2980,1564.5,1564.5,0,1475.1, [0,0,0,0,0,0,0,312.9,1095.15,156.45,0,0]],
+["เมืองลำปาง","นิคมพัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",70,332,174.3,174.3,0,164.34, [0,0,0,0,0,0,0,0,0,34.86,122.01,17.43]],
+["เมืองลำปาง","นิคมพัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",604,3682.67,1933.4,1933.4,0,1822.92, [0,0,0,0,0,0,0,0,0,386.68,1353.38,193.34]],
+["เมืองลำปาง","นิคมพัฒนา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",70,269,30.96,6.19,24.77,30.96, [0,0,0,0,0,0,0,24.77,6.19,0,0,0]],
+["เมืองลำปาง","นิคมพัฒนา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",54,300,315,0,315,214.5, [0,0,0,0,0,0,0,0,0,63,220.5,31.5]],
+["เมืองลำปาง","นิคมพัฒนา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",34,390,1184.43,118.44,1065.99,1125.15, [0,0,0,0,0,0,414.55,414.55,355.33,0,0,0]],
+["เมืองลำปาง","บ่อแฮ้ว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",2,34,103.26,10.33,92.93,98.09, [0,0,0,0,0,0,36.14,36.14,30.98,0,0,0]],
+["เมืองลำปาง","บ่อแฮ้ว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",3,9,1.08,0.22,0.86,1.08, [0,0,0,0,0,0,0,0.86,0.22,0,0,0]],
+["เมืองลำปาง","บ่อแฮ้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",340,2287.66,1201.02,1201.02,0,1132.39, [0,0,0,0,0,0,0,0,0,240.2,840.72,120.1]],
+["เมืองลำปาง","บ่อแฮ้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",157,1076,564.9,564.9,0,532.61, [0,0,0,0,0,0,0,0,0,112.98,395.43,56.49]],
+["เมืองลำปาง","บ่อแฮ้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",240,2412,1266.3,1266.3,0,1193.94, [0,0,0,0,0,0,0,253.26,886.41,126.63,0,0]],
+["เมืองลำปาง","บ้านค่า","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",42,81.6,42.84,42.84,0,40.39, [0,0,0,0,0,0,0,0,0,8.57,29.99,4.28]],
+["เมืองลำปาง","บ้านค่า","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",200,2200,1050,0,1050,1573, [0,0,0,0,0,0,210,735,105,0,0,0]],
+["เมืองลำปาง","บ้านค่า","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",922,4106.54,2155.93,2155.93,0,2032.74, [0,0,0,0,0,0,0,0,0,431.19,1509.15,215.59]],
+["เมืองลำปาง","บ้านค่า","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",28,76,9.12,1.82,7.3,9.12, [0,0,0,0,0,0,0,7.3,1.82,0,0,0]],
+["เมืองลำปาง","บ้านค่า","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",180,2258,2370.9,0,2370.9,1614.47, [0,0,0,0,0,0,0,0,0,474.18,1659.63,237.09]],
+["เมืองลำปาง","บ้านค่า","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",75,600,1822.2,182.22,1639.98,1731, [0,0,0,0,0,0,637.77,637.77,546.66,0,0,0]],
+["เมืองลำปาง","บ้านเป้า","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",16,193,586.14,58.61,527.53,556.8, [0,0,0,0,0,0,205.15,205.15,175.84,0,0,0]],
+["เมืองลำปาง","บ้านเป้า","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",20,38,4.56,0.91,3.65,4.56, [0,0,0,0,0,0,0,3.65,0.91,0,0,0]],
+["เมืองลำปาง","บ้านเป้า","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",630,4241.29,2226.68,2226.68,0,2099.44, [0,0,0,0,0,0,0,0,0,445.34,1558.67,222.67]],
+["เมืองลำปาง","บ้านเป้า","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",80,698,366.46,366.46,0,345.51, [0,0,0,0,0,0,0,0,0,73.29,256.52,36.65]],
+["เมืองลำปาง","บ้านเป้า","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",600,4000,2100,2100,0,1980, [0,0,0,0,0,0,0,420,1470,210,0,0]],
+["เมืองลำปาง","บ้านแลง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",32,47,24.68,24.68,0,23.27, [0,0,0,0,0,0,0,0,0,4.94,17.27,2.47]],
+["เมืองลำปาง","บ้านแลง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",535,1733.11,909.89,909.89,0,857.89, [0,0,0,0,0,0,0,0,0,181.98,636.92,90.99]],
+["เมืองลำปาง","บ้านแลง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",60,137,16.44,3.29,13.15,16.44, [0,0,0,0,0,0,0,13.15,3.29,0,0,0]],
+["เมืองลำปาง","บ้านแลง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",387,5000,5250,0,5250,3575, [0,0,0,0,0,0,0,0,0,1050,3675,525]],
+["เมืองลำปาง","บ้านแลง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",14,80,242.97,24.3,218.67,230.8, [0,0,0,0,0,0,85.04,85.04,72.89,0,0,0]],
+["เมืองลำปาง","บ้านเสด็จ","สินค้าพื้นฐาน","พืชไร่","สับปะรดโรงงาน","สับปะรดโรงงาน/ปัตตาเวีย",1256,16269,30986,4647.9,26338.1,30056.42, [0,0,0,0,0,0,1549.3,6197.2,12394.4,9295.8,1549.3,0]],
+["เมืองลำปาง","บ้านเสด็จ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",19,50,151.86,15.19,136.67,144.26, [0,0,0,0,0,0,53.15,53.15,45.56,0,0,0]],
+["เมืองลำปาง","บ้านเสด็จ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",35,157,12.12,2.42,9.7,12.12, [0,0,0,0,0,0,0,9.7,2.42,0,0,0]],
+["เมืองลำปาง","บ้านเสด็จ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",613,2764.01,1451.1,1451.1,0,1368.19, [0,0,0,0,0,0,0,0,0,290.22,1015.77,145.11]],
+["เมืองลำปาง","บ้านเสด็จ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",132,327,171.68,171.68,0,161.87, [0,0,0,0,0,0,0,0,0,34.34,120.17,17.17]],
+["เมืองลำปาง","บ้านเสด็จ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",250,746,391.66,391.66,0,369.27, [0,0,0,0,0,0,0,78.33,274.16,39.17,0,0]],
+["เมืองลำปาง","บ้านเอื้อม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",50,148,77.7,77.7,0,73.26, [0,0,0,0,0,0,0,0,0,15.54,54.39,7.77]],
+["เมืองลำปาง","บ้านเอื้อม","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",220,1200,1050,0,1050,858, [0,0,0,0,0,0,210,735,105,0,0,0]],
+["เมืองลำปาง","บ้านเอื้อม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1499,7704.68,4044.96,4044.96,0,3813.81, [0,0,0,0,0,0,0,0,0,808.99,2831.47,404.5]],
+["เมืองลำปาง","บ้านเอื้อม","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",11,34,4.08,0.82,3.26,4.08, [0,0,0,0,0,0,0,3.26,0.82,0,0,0]],
+["เมืองลำปาง","บ้านเอื้อม","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",296,1700,1785,0,1785,1215.5, [0,0,0,0,0,0,0,0,0,357,1249.5,178.5]],
+["เมืองลำปาง","บ้านเอื้อม","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",550,6500,19740.51,1974.05,17766.46,18752.51, [0,0,0,0,0,0,6909.18,6909.18,5922.15,0,0,0]],
+["เมืองลำปาง","บุญนาคพัฒนา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",32,350,1062.95,106.3,956.65,1009.75, [0,0,0,0,0,0,372.03,372.03,318.89,0,0,0]],
+["เมืองลำปาง","บุญนาคพัฒนา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",120,1300,1365,0,1365,929.5, [0,0,0,0,0,0,0,0,0,273,955.5,136.5]],
+["เมืองลำปาง","บุญนาคพัฒนา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",41,188,22.56,4.51,18.05,22.56, [0,0,0,0,0,0,0,18.05,4.51,0,0,0]],
+["เมืองลำปาง","บุญนาคพัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",779,4215.64,2213.21,2213.21,0,2086.74, [0,0,0,0,0,0,0,0,0,442.64,1549.25,221.32]],
+["เมืองลำปาง","บุญนาคพัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",138,378.75,198.84,198.84,0,187.49, [0,0,0,0,0,0,0,0,0,39.77,139.19,19.88]],
+["เมืองลำปาง","บุญนาคพัฒนา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",561,3208,1684.2,1684.2,0,1587.96, [0,0,0,0,0,0,0,336.84,1178.94,168.42,0,0]],
+["เมืองลำปาง","ปงแสนทอง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",440,3170,1664.26,1664.26,0,1569.16, [0,0,0,0,0,0,0,332.85,1164.98,166.43,0,0]],
+["เมืองลำปาง","ปงแสนทอง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",109,499.75,262.37,262.37,0,247.38, [0,0,0,0,0,0,0,0,0,52.47,183.66,26.24]],
+["เมืองลำปาง","ปงแสนทอง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",843,5733.38,3010.02,3010.02,0,2838.02, [0,0,0,0,0,0,0,0,0,602,2107.02,301]],
+["เมืองลำปาง","ปงแสนทอง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",10,23,2.76,0.55,2.21,2.76, [0,0,0,0,0,0,0,2.21,0.55,0,0,0]],
+["เมืองลำปาง","พระบาท","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",38,650,682.5,0,682.5,464.76, [0,0,0,0,0,0,0,0,0,136.5,477.75,68.25]],
+["เมืองลำปาง","พระบาท","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",40,250,30,6,24,30, [0,0,0,0,0,0,0,24,6,0,0,0]],
+["เมืองลำปาง","พระบาท","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",50,800,2429.6,242.96,2186.64,2308, [0,0,0,0,0,0,850.36,850.36,728.88,0,0,0]],
+["เมืองลำปาง","พระบาท","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",128,763.4,400.79,400.79,0,377.89, [0,0,0,0,0,0,0,0,0,80.16,280.55,40.08]],
+["เมืองลำปาง","พระบาท","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",57,282,148.06,148.06,0,139.59, [0,0,0,0,0,0,0,0,0,29.61,103.64,14.81]],
+["เมืองลำปาง","พระบาท","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",45,420,220.5,220.5,0,207.9, [0,0,0,0,0,0,0,44.1,154.35,22.05,0,0]],
+["เมืองลำปาง","พิชัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",372,2420,1270.5,1270.5,0,1197.9, [0,0,0,0,0,0,0,254.1,889.35,127.05,0,0]],
+["เมืองลำปาง","พิชัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",56,587,308.18,308.18,0,290.57, [0,0,0,0,0,0,0,0,0,61.64,215.72,30.82]],
+["เมืองลำปาง","พิชัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",463,2715.14,1425.44,1425.44,0,1344, [0,0,0,0,0,0,0,0,0,285.09,997.81,142.54]],
+["เมืองลำปาง","พิชัย","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",34,440,1336.28,133.63,1202.65,1269.4, [0,0,0,0,0,0,467.7,467.7,400.88,0,0,0]],
+["เมืองลำปาง","พิชัย","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",5,39,2.4,0.48,1.92,2.4, [0,0,0,0,0,0,0,1.92,0.48,0,0,0]],
+["แม่ทะ","ดอนไฟ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",109,248,127,127,0,121, [0,0,0,0,0,0,0,0,0,0,89,38]],
+["แม่ทะ","ดอนไฟ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",733,2748,1731,1731,0,1663, [0,0,0,0,0,0,0,0,0,0,1212,519]],
+["แม่ทะ","ดอนไฟ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",235,4787,5506,5506,0,5446, [0,0,0,0,0,0,0,0,0,1101,2753,1652]],
+["แม่ทะ","ดอนไฟ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",85,211,35.67,35.67,0,40.77, [0,0,0,0,0,0,0,0,0,10.7,24.97,0]],
+["แม่ทะ","นาครัว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",84,476,1405,1405,0,1391, [0,0,0,0,0,0,0,0,140,562,492,211]],
+["แม่ทะ","นาครัว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",11,24,1.71,1.71,0,2.29, [0,0,0,0,0,0,0,0,0,0.51,1.2,0]],
+["แม่ทะ","นาครัว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",419,4020,4422,4422,0,4376, [0,0,0,0,0,0,0,0,0,884,2211,1327]],
+["แม่ทะ","นาครัว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1126,3863,2511,2511,0,2411, [0,0,0,0,0,0,0,0,0,0,1758,753]],
+["แม่ทะ","นาครัว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",370,1111,573,573,0,550, [0,0,0,0,0,0,0,0,0,0,401,172]],
+["แม่ทะ","น้ำโจ้","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",112,837,904,904,0,894, [0,0,0,0,0,0,0,0,0,181,452,271]],
+["แม่ทะ","น้ำโจ้","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",337,899,494,494,0,474, [0,0,0,0,0,0,0,0,0,0,346,148]],
+["แม่ทะ","น้ำโจ้","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1528,6274,4267,4267,0,4097, [0,0,0,0,0,0,0,0,0,0,2987,1280]],
+["แม่ทะ","น้ำโจ้","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",27,54,6.54,6.54,0,7.86, [0,0,0,0,0,0,0,0,0,1.96,4.58,0]],
+["แม่ทะ","น้ำโจ้","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",38,260,754,754,0,747, [0,0,0,0,0,0,0,0,75,302,264,113]],
+["แม่ทะ","บ้านกิ่ว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",2,13,37,37,0,36, [0,0,0,0,0,0,0,0,0,37,0,0]],
+["แม่ทะ","บ้านกิ่ว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",47,587,616,616,0,610, [0,0,0,0,0,0,0,0,0,123,308,185]],
+["แม่ทะ","บ้านกิ่ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",752,2990,1883,1883,0,1809, [0,0,0,0,0,0,0,0,0,0,1318,565]],
+["แม่ทะ","บ้านกิ่ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",308,837,436,436,0,418, [0,0,0,0,0,0,0,0,0,0,305,131]],
+["แม่ทะ","บ้านบอม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",241,793,408,408,0,392, [0,0,0,0,0,0,0,0,0,0,286,122]],
+["แม่ทะ","บ้านบอม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",638,3517,2251,2251,0,2162, [0,0,0,0,0,0,0,0,0,0,1576,675]],
+["แม่ทะ","บ้านบอม","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",158,1996,2096,2096,0,2074, [0,0,0,0,0,0,0,0,0,419,1048,629]],
+["แม่ทะ","บ้านบอม","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",16,148,446,446,0,440, [0,0,0,0,0,0,0,0,45,178,156,67]],
+["แม่ทะ","ป่าตัน","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",6,19,55,55,0,55, [0,0,0,0,0,0,0,0,0,33,22,0]],
+["แม่ทะ","ป่าตัน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",23,142,150,150,0,149, [0,0,0,0,0,0,0,0,0,30,75,45]],
+["แม่ทะ","ป่าตัน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",941,4096,2744,2744,0,2636, [0,0,0,0,0,0,0,0,0,0,1921,823]],
+["แม่ทะ","ป่าตัน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",382,1211,641,641,0,616, [0,0,0,0,0,0,0,0,0,0,449,192]],
+["แม่ทะ","แม่ทะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",381,1322,667,667,0,641, [0,0,0,0,0,0,0,0,0,0,467,200]],
+["แม่ทะ","แม่ทะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1012,4534,2856,2856,0,2743, [0,0,0,0,0,0,0,0,0,0,1999,857]],
+["แม่ทะ","แม่ทะ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",431,5159,5520,5520,0,5461, [0,0,0,0,0,0,0,0,0,1104,2760,1656]],
+["แม่ทะ","แม่ทะ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",24,124,14.97,14.97,0,17.96, [0,0,0,0,0,0,0,0,0,4.49,10.48,0]],
+["แม่ทะ","แม่ทะ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",50,314,897,897,0,888, [0,0,0,0,0,0,0,0,90,359,314,134]],
+["แม่ทะ","วังเงิน","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",202,2625,2940,2940,0,2909, [0,0,0,0,0,0,0,0,0,588,1470,882]],
+["แม่ทะ","วังเงิน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",490,1545,973,973,0,934, [0,0,0,0,0,0,0,0,0,0,681,292]],
+["แม่ทะ","วังเงิน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",58,105,53,53,0,51, [0,0,0,0,0,0,0,0,0,0,37,16]],
+["แม่ทะ","สันดอนแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",86,229,114,114,0,110, [0,0,0,0,0,0,0,0,0,0,80,34]],
+["แม่ทะ","สันดอนแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",755,4159,2620,2620,0,2516, [0,0,0,0,0,0,0,0,0,0,1834,786]],
+["แม่ทะ","สันดอนแก้ว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",152,3081,3296,3296,0,3262, [0,0,0,0,0,0,0,0,0,659,1648,989]],
+["แม่ทะ","สันดอนแก้ว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",19,172,508,508,0,502, [0,0,0,0,0,0,0,0,51,203,178,76]],
+["แม่ทะ","หัวเสือ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",53,465,1466,1466,0,1452, [0,0,0,0,0,0,0,0,147,586,513,220]],
+["แม่ทะ","หัวเสือ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",165,827,160.13,160.13,0,180.14, [0,0,0,0,0,0,0,0,0,48.04,112.09,0]],
+["แม่ทะ","หัวเสือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",977,4009,2606,2606,0,2503, [0,0,0,0,0,0,0,0,0,0,1824,782]],
+["แม่ทะ","หัวเสือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",131,344,176,176,0,169, [0,0,0,0,0,0,0,0,0,0,123,53]],
+["แม่ทะ","หัวเสือ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",399,6300,7056,7056,0,6981, [0,0,0,0,0,0,0,0,0,1411,3528,2117]],
+["แม่พริก","ผาปัง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",95,347,174.19,165.48,8.71,165.48, [0,0,0,0,0,0,0,0,0,0,71.1,103.09]],
+["แม่พริก","ผาปัง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",261,1488,755.9,718.1,37.8,718.11, [0,0,0,0,0,0,0,0,0,0,375.4,380.5]],
+["แม่พริก","พระบาทวังตวง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",79,581,617.02,0,617.02,598.51, [0,0,0,0,0,0,0,0,0,12,135,214.02]],
+["แม่พริก","พระบาทวังตวง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",195,2361,7770.05,7770.05,0,7536.95, [1284,2444,2359,0,0,0,241.05,1442,0,0,0,0]],
+["แม่พริก","พระบาทวังตวง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",237,1190,610.45,579.93,30.52,579.95, [0,0,0,0,0,0,0,0,0,0,245.4,365.05]],
+["แม่พริก","พระบาทวังตวง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",537,2335,1186.18,1126.87,59.31,1126.84, [0,0,0,0,0,0,0,0,0,0,492.18,694]],
+["แม่พริก","แม่ปุ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",489,2408,1206.41,1146.09,60.32,1146.09, [0,0,0,0,0,0,0,0,0,0,705.4,501.01]],
+["แม่พริก","แม่ปุ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",390,1430,729.3,692.83,36.47,692.84, [0,0,0,0,0,0,0,0,0,0,330.3,399]],
+["แม่พริก","แม่ปุ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",7,18,50.99,50.99,0,49.46, [12.3,13.5,7,0,0,0,5,13.19,0,0,0,0]],
+["แม่พริก","แม่ปุ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",18,130,137.67,0,137.67,133.54, [0,0,0,0,0,0,0,0,0,15,37.3,57.2]],
+["แม่พริก","แม่ปุ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",71,161,16.42,1.64,14.78,45, [0,0,0,0,0,0,0,0,0,7.02,9.4,0]],
+["แม่พริก","แม่พริก","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",72,128,16.51,1.65,14.86,35, [0,0,0,0,0,0,0,0,0,8.4,8.11,0]],
+["แม่พริก","แม่พริก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",181,2258,2332.51,0,2332.51,2263.54, [0,0,0,0,0,0,0,0,0,197,213,1082.3]],
+["แม่พริก","แม่พริก","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",6,49,146.02,146.02,0,141.64, [20,34,43,0,0,0,15,34.02,0,0,0,0]],
+["แม่พริก","แม่พริก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",588,2255,1159.07,1101.12,57.95,1101.12, [0,0,0,0,0,0,0,0,0,0,638,521.07]],
+["แม่พริก","แม่พริก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",532,2344,1193.1,59.65,1133.45,1133.44, [0,0,0,0,0,0,0,0,0,0,539.1,654]],
+["แม่เมาะ","จางเหนือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",36,45.39,22,17.6,4.4,22, [0,0,0,0,0,0,0,0,0,12,10,0]],
+["แม่เมาะ","จางเหนือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",917,3652.18,1753,1402.4,350.6,1750, [0,0,0,0,0,0,41,1066,646,0,0,0]],
+["แม่เมาะ","จางเหนือ","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",200,97,76,76,0,84, [2,3,2,1,5,10,11,12,12,10,5,3]],
+["แม่เมาะ","จางเหนือ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",96,858.51,2285,0,2285,2270, [0,0,0,0,0,0,0,0,540,1240,430,75]],
+["แม่เมาะ","จางเหนือ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",991,19426,13635,0,13635,13645, [0,0,0,0,0,0,0,750,9520,3240,125,0]],
+["แม่เมาะ","จางเหนือ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",13,77,8.5,0,8.5,9, [0,0,0,0,0,0,0,2,6.5,0,0,0]],
+["แม่เมาะ","นาสัก","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",4,10.75,1,0.25,0.75,1.5, [0,0,0,0,0,0,0,0.25,0.75,0,0,0]],
+["แม่เมาะ","นาสัก","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",339,3943,2878,0,2878,2695, [0,0,0,0,0,0,0,16,985,1795,77,5]],
+["แม่เมาะ","นาสัก","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",100,57,45,45,0,45, [5,5,2,5,2,5,2,5,5,2,5,2]],
+["แม่เมาะ","นาสัก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",882,3919.71,1881.69,1504.69,377,1891, [0,0,0,0,0,0,153,1577,151,0.69,0,0]],
+["แม่เมาะ","นาสัก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",129,287.94,137.5,110,27.5,140, [0,0,0,0,0,0,0,109.5,28,0,0,0]],
+["แม่เมาะ","บ้านดง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",123,612.07,288,288,0,270, [0,0,0,0,0,0,19,268,1,0,0,0]],
+["แม่เมาะ","บ้านดง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",350,1850.2,890,890,0,850, [0,0,0,0,0,0,277,535,78,0,0,0]],
+["แม่เมาะ","บ้านดง","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",150,77,55,55,0,52, [5,5,3,3,5,6,4,6,6,5,2,5]],
+["แม่เมาะ","บ้านดง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",90,1459.25,1015,0,1015,1010, [0,0,0,0,0,0,0,121,544,350,0,0]],
+["แม่เมาะ","แม่เมาะ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",19,46.5,6,1,5,8, [0,0,0,0,0,0,0,2,4,0,0,0]],
+["แม่เมาะ","แม่เมาะ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",110,1145,888,0,888,850, [0,0,0,0,0,0,0,0,30,785,73,0]],
+["แม่เมาะ","แม่เมาะ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",36,368,931.92,0,931.92,930, [0,0,0,0,0,0,0,0,10.29,442.74,478.89,0]],
+["แม่เมาะ","แม่เมาะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",137,626.33,301,60,241,295, [0,0,0,0,0,0,0,184,115,2,0,0]],
+["แม่เมาะ","แม่เมาะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",27,83.94,41,41,0,38, [0,0,0,0,0,0,0,27,14,0,0,0]],
+["แม่เมาะ","สบป้าด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",118,520.67,249,199.2,49.8,240, [0,0,0,0,0,0,0,158,91,0,0,0]],
+["แม่เมาะ","สบป้าด","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",713,3543.41,1702,1362,340,1690, [0,0,0,0,0,0,0,1492,210,0,0,0]],
+["แม่เมาะ","สบป้าด","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",200,45,36,36,0,36, [1,2,4,3,2,3,4,5,3,5,3,1]],
+["แม่เมาะ","สบป้าด","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",38,500,1400,0,1400,1340, [0,0,0,0,0,0,60,150,400,600,150,40]],
+["แม่เมาะ","สบป้าด","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",344,5249,3900,0,3900,3800, [0,0,0,0,0,0,0,0,310,3470,120,0]],
+["แม่เมาะ","สบป้าด","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",67,342.5,37,2,35,40, [0,0,0,0,0,0,0,9,28,0,0,0]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",638,3573,1766.07,0,1766.07,1854.38, [0,0,0,0,0,0,1181.02,585.05,0,0,0,0]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",595,8311.93,6350.32,0,6350.32,6032.8, [0,0,0,0,0,0,208.55,4514.4,1479.59,147.78,0,0]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",3,43.99,38.36,0,38.36,12.67, [2.5,2.5,2,2.11,5.75,5.75,4.06,4,2.19,2.5,2.5,2.5]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",382,3798.04,9779.94,0,9779.94,9290.92, [30.05,122.08,1906.94,1801.99,2238.99,2022.07,989.17,385.4,0,283.25,0,0]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",750,1100,2321.01,0,2321.01,2204.96, [0,58.25,189.52,155.85,167.52,177.93,162.39,19.22,884.85,484.62,20.86,0]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",969,4255,5527.66,5527.66,0,2401.09, [0,0,0,0,0,0,73.74,4861.83,512.28,79.81,0,0]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",40,220,220,0,220,220, [0,0,0,0,0,0,32.65,157.35,30,0,0,0]],
+["วังเหนือ","ทุ่งฮั้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",27,86.12,45.57,20,25.57,41.12, [0,0,0,0,0,0,6.78,23.63,15.16,0,0,0]],
+["วังเหนือ","ร่องเคาะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",80,285.05,169.29,35,134.29,169.29, [0,0,0,0,0,0,0,0,169.29,0,0,0]],
+["วังเหนือ","ร่องเคาะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1359,6394.95,3798.93,1598,2200.93,3769.52, [0,0,0,0,0,0,13.73,1040.75,2657.52,86.93,0,0]],
+["วังเหนือ","ร่องเคาะ","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",16,61.88,130.55,0,130.55,124.03, [0,0,0,0,0,0,7.13,40.79,48.32,27.24,7.07,0]],
+["วังเหนือ","ร่องเคาะ","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",52,103.7,90.63,30,60.63,86.1, [0,0,0,0,0,0,90.63,0,0,0,0,0]],
+["วังเหนือ","ร่องเคาะ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",70,630,1622.25,0,1622.25,1541.13, [25.75,190.83,509.92,433.23,234.47,111.81,116.24,0,0,0,0,0]],
+["วังเหนือ","ร่องเคาะ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",646,7520,5745.79,0,5745.79,5458.51, [0,0,0,0,0,0,245.35,3426.15,2014.97,59.32,0,0]],
+["วังเหนือ","ร่องเคาะ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",254,1681,832.9,0,832.9,874.55, [0,0,0,0,0,0,628.32,204.58,0,0,0,0]],
+["วังเหนือ","วังแก้ว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",361,1836.16,1095.97,0,1095.97,1150.76, [0,0,0,0,0,0,732.99,362.98,0,0,0,0]],
+["วังเหนือ","วังแก้ว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",401,5840.44,4462.1,0,4462.1,4238.99, [0,0,0,0,0,0,136.82,2044.27,2169,112.01,0,0]],
+["วังเหนือ","วังแก้ว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",50,593.04,1527.08,0,1527.08,1450.73, [0,130.9,228.97,503,302.32,361.89,0,0,0,0,0,0]],
+["วังเหนือ","วังแก้ว","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",54,250.57,528.7,0,528.7,502.25, [0,0,0,0,0,0,156.75,105.16,51.52,12.56,35.23,40.16]],
+["วังเหนือ","วังแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",489,1997.59,1187.4,507,680.4,1131.84, [0,0,0,0,0,0,7.32,593.55,573.12,13.41,0,0]],
+["วังเหนือ","วังแก้ว","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 2",77,303.89,303.89,0,303.89,303.89, [0,0,0,0,0,0,98.57,157.88,47.44,0,0,0]],
+["วังเหนือ","วังแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",77,276.42,146.22,40,106.22,131.97, [0,0,0,0,0,0,7.65,109.13,24.72,4.72,0,0]],
+["วังเหนือ","วังซ้าย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",15,39.57,23.5,23.5,0,23.5, [0,0,0,0,0,0,0,0,23.5,0,0,0]],
+["วังเหนือ","วังซ้าย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",745,3828.05,2274.36,1130.55,1143.81,2182.5, [0,0,0,0,0,0,1.93,7.63,739.35,1205.31,320.14,0]],
+["วังเหนือ","วังซ้าย","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",10,300,633,0,633,591.35, [0,0,0,0,0,0,54.87,0,53.25,66.79,68.33,0]],
+["วังเหนือ","วังซ้าย","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",120,1165,2999.69,0,2999.69,2849.7, [0,453.14,909.68,910.84,445.62,258.65,21.76,0,0,0,0,0]],
+["วังเหนือ","วังซ้าย","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",346,3893.72,2974.78,0,2974.78,2826.06, [0,0,0,0,0,0,131.53,1387.32,1363.6,92.33,0,0]],
+["วังเหนือ","วังซ้าย","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",286,1318.66,786.02,0,786.02,825.32, [0,0,0,0,0,0,554.82,231.2,0,0,0,0]],
+["วังเหนือ","วังใต้","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",117,543,297,0,297,311.85, [0,0,0,0,0,0,182.39,114.61,0,0,0,0]],
+["วังเหนือ","วังใต้","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",286,2249.96,1718.89,0,1718.89,1633.03, [0,0,0,0,0,0,265,1059.95,372.95,20.99,0,0]],
+["วังเหนือ","วังใต้","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",30,285.41,734.93,0,734.93,698.19, [0,139.05,247.87,348.01,0,0,0,0,0,0,0,0]],
+["วังเหนือ","วังใต้","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",463,1735.38,1033.1,103,930.1,1000.45, [0,0,0,0,0,0,0.59,340.64,681.06,10.81,0,0]],
+["วังเหนือ","วังใต้","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",17,37.53,22.29,22.29,0,22.29, [0,0,0,0,0,0,0,0,22.29,0,0,0]],
+["วังเหนือ","วังทรายคำ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",10,14.12,8.38,8.38,0,8.38, [0,0,0,0,0,0,0,0,8.38,0,0,0]],
+["วังเหนือ","วังทรายคำ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",562,2645.69,1571.93,777.55,794.38,1500.93, [0,0,0,0,0,0,14.4,970.34,565.32,21.87,0,0]],
+["วังเหนือ","วังทรายคำ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",15,135,347.63,0,347.63,330.25, [0,0,82.94,178.79,7.21,22.71,55.98,0,0,0,0,0]],
+["วังเหนือ","วังทรายคำ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",270,5832.5,4456.04,0,4456.04,4233.23, [0,0,0,0,0,0,24.64,839.35,3508.74,83.31,0,0]],
+["วังเหนือ","วังทรายคำ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",60,243.7,136.97,0,136.97,143.82, [0,0,0,0,0,0,93.98,42.99,0,0,0,0]],
+["วังเหนือ","วังทอง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",301,1366.46,801.95,0,801.95,842.04, [0,0,0,0,0,0,595.84,206.11,0,0,0,0]],
+["วังเหนือ","วังทอง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",799,18202.93,13907.03,0,13907.03,13211.68, [0,0,0,0,0,0,340.93,8334.91,5010.42,220.77,0,0]],
+["วังเหนือ","วังทอง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",74,879,2263.45,0,2263.45,2150.27, [17.05,238.63,580.18,640.25,553.01,90.13,92.7,0,0,51.5,0,0]],
+["วังเหนือ","วังทอง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",622,1928.85,1145.45,572,573.45,1094.27, [0,0,0,0,0,0,10,283.73,765.88,85.84,0,0]],
+["วังเหนือ","วังเหนือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",8,17.73,10.53,10.53,0,10.53, [0,0,0,0,0,0,0,0,10.53,0,0,0]],
+["วังเหนือ","วังเหนือ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",555,2736.99,1625.87,625,1000.87,1554.08, [0,0,0,0,0,0,17.37,1277.97,319.61,10.92,0,0]],
+["วังเหนือ","วังเหนือ","สินค้าพื้นฐาน","พืชผัก","ข้าวโพดหวาน","ข้าวโพดหวาน",30,850,1793.5,0,1793.5,1703.83, [0,0,0,0,0,0,105.57,1093,548.25,46.68,0,0]],
+["วังเหนือ","วังเหนือ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",29,163,419.73,0,419.73,398.75, [0,16.27,84.98,199.3,119.18,0,0,0,0,0,0,0]],
+["วังเหนือ","วังเหนือ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",162,1337.01,1021.48,0,1021.48,970.41, [0,0,0,0,0,0,54.39,747.85,189.76,29.48,0,0]],
+["วังเหนือ","วังเหนือ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",448,2102,1102.15,0,1102.15,1157.26, [0,0,0,0,0,0,642.09,460.06,0,0,0,0]],
+["สบปราบ","นายาง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",20,26.25,1.1,1.1,0,5.2, [0,0,0,0,0,0,0,0,0,0.4,0.7,0]],
+["สบปราบ","นายาง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",36,330,990,990,0,990, [0,0,0,0,0,0,0,0,99,144,346,356]],
+["สบปราบ","นายาง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",944,4616,2447,2447,0,2447, [0,0,0,0,0,0,0,0,0,245,1835,367]],
+["สบปราบ","นายาง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",102,233,122,122,0,122, [0,0,0,0,0,0,0,0,0,0,104,18]],
+["สบปราบ","แม่กัวะ","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",32,381,320,320,0,320, [0,0,0,0,0,0,0,0,0,15,47,258]],
+["สบปราบ","แม่กัวะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",218,751,392,392,0,392, [0,0,0,0,0,0,0,0,0,0,314,78]],
+["สบปราบ","แม่กัวะ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",842,5178,2694,2694,0,2694, [0,0,0,0,0,0,0,0,0,538,1885,271]],
+["สบปราบ","แม่กัวะ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",334,4416,13249,13249,0,13249, [0,0,0,0,0,0,0,0,1325,1987,4600,4675]],
+["สบปราบ","สบปราบ","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",20,20.75,1.1,1.1,0,4, [0,0,0,0,0,0,0,0,0,0.3,0.8,0]],
+["สบปราบ","สบปราบ","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",27,164,492,492,0,492, [0,0,0,0,0,0,0,0,49,74,172,172]],
+["สบปราบ","สบปราบ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1569,8548,4446,4446,0,4446, [0,0,0,0,0,0,0,0,0,445,3556,445]],
+["สบปราบ","สบปราบ","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",155,442,226,226,0,226, [0,0,0,0,0,0,0,0,0,0,201,25]],
+["สบปราบ","สมัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",171,600,306,306,0,306, [0,0,0,0,0,0,0,0,0,0,252,54]],
+["สบปราบ","สมัย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1548,10356,5386,5386,0,5386, [0,0,0,0,0,0,0,0,0,1077,3502,807]],
+["สบปราบ","สมัย","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",231,2462,7405,7405,0,7405, [0,0,0,0,0,0,0,0,738,1105,2590,2642]],
+["สบปราบ","สมัย","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",39,538,452,452,0,452, [0,0,0,0,0,0,0,0,0,21,143,288]],
+["เสริมงาม","ทุ่งงาม","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",95,130,13,13,0,19, [0,0,0,0,0,0,0,4.5,8.5,0,0,0]],
+["เสริมงาม","ทุ่งงาม","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",2,20,50.4,0,50.4,50.4, [3.5,4.5,6.25,2.5,4.25,5.25,2.15,4.5,3.5,4.5,5.25,4.25]],
+["เสริมงาม","ทุ่งงาม","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",25,60.5,60.5,60.5,0,60.5, [0,0,0,0,0,0,0,0,0,15.5,34.5,10.5]],
+["เสริมงาม","ทุ่งงาม","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",180,1450.5,3732,3732,0,3732, [0,0,0,0,0,0,0,0,0,865.5,1065.5,1065.5]],
+["เสริมงาม","ทุ่งงาม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1400,7140,4311,4311,0,4311, [0,0,0,0,0,0,0,0,0,450.5,1350,2510.5]],
+["เสริมงาม","ทุ่งงาม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",30,105,63,63,0,63.5, [0,0,0,0,0,0,0,0,0,8,28.5,26.5]],
+["เสริมงาม","เสริมกลาง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",23,76,39.5,38,1.5,44, [0,0,0,0,0,0,0,0,0,0,37,2.5]],
+["เสริมงาม","เสริมกลาง","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1415,7308,4010.5,3600,410.5,3986, [0,0,0,0,0,0,0,0,0,540,3045,425.5]],
+["เสริมงาม","เสริมกลาง","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",34,186,483.6,210,273.6,471, [0,0,0,0,0,0,0,0,10,46,143,244]],
+["เสริมงาม","เสริมกลาง","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",93,165,198,113,85,211.5, [0,0,0,0,0,0,12,185,1,0,0,0]],
+["เสริมงาม","เสริมกลาง","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",22,166,190.4,150,40.4,155, [0,0,0,0,0,0,0,0,0,19.04,133.28,38.08]],
+["เสริมงาม","เสริมกลาง","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",170,212,14.4,7,7.4,15.8, [0,0,0,0,0,0,0,9,5.4,0,0,0]],
+["เสริมงาม","เสริมขวา","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",111,430,110,110,0,230, [0,0,0,0,0,0,105,5,0,0,0,0]],
+["เสริมงาม","เสริมขวา","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",10,80,237,0,237,216, [12,10,10,10,25,20,30,70,50,0,0,0]],
+["เสริมงาม","เสริมขวา","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",48,480,552,0,552,560, [0,0,0,0,0,0,0,0,0,55.2,386.4,110.4]],
+["เสริมงาม","เสริมขวา","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",38,355,1110,1110,0,1070, [0,0,0,0,0,0,0,0,300,250,350,210]],
+["เสริมงาม","เสริมขวา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1310,5295,3177,2800,377,3145, [0,0,0,0,0,0,0,0,0,450,2560,167]],
+["เสริมงาม","เสริมขวา","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",120,265,160,160,0,150, [0,0,0,0,0,0,0,0,0,0,130,30]],
+["เสริมงาม","เสริมซ้าย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",35,110,66,55,11,66, [0,0,0,0,0,0,0,0,0,0,60,6]],
+["เสริมงาม","เสริมซ้าย","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1571,9255,5600,5000,600,5600, [0,0,0,0,0,0,0,0,0,0,5000,600]],
+["เสริมงาม","เสริมซ้าย","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",188,1672,5050,0,5050,5050, [0,0,0,0,0,0,0,0,1300,1850,1900,0]],
+["เสริมงาม","เสริมซ้าย","สินค้าพื้นฐาน","พืชผัก","กระเทียม","กระเทียมหัว",42,48,48,23,25,50, [0,0,0,0,0,0,38,10,0,0,0,0]],
+["เสริมงาม","เสริมซ้าย","สินค้าพื้นฐาน","พืชไร่","ข้าวโพดเลี้ยงสัตว์","ข้าวโพดเลี้ยงสัตว์ รุ่น 1",240,2317.59,2646.57,446.57,2200,2666.57, [0,0,0,0,0,0,0,0,0,266.52,1847,533.05]],
+["เสริมงาม","เสริมซ้าย","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",288,840,690,540,150,850, [0,0,0,0,0,0,670,20,0,0,0,0]],
+["ห้างฉัตร","ปงยางคก","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",3,4,0.01,0.01,0,2, [0,0,0,0,0,0,0,0.01,0,0,0,0]],
+["ห้างฉัตร","ปงยางคก","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",1,4,4,0,4,4, [0.2,0.2,0.2,0.2,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4]],
+["ห้างฉัตร","ปงยางคก","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",2,26,62.5,0,62.5,52.5, [0,0,0,0,0,0,10,20,32.5,0,0,0]],
+["ห้างฉัตร","ปงยางคก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",987,5539.45,2769.72,553.45,2216.27,2810, [0,0,0,0,0,0,553.945,1800.32,415.45,0,0,0]],
+["ห้างฉัตร","ปงยางคก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",99,407.97,187.66,187.66,0,187.66, [0,0,0,0,0,0,0,187.66,0,0,0,0]],
+["ห้างฉัตร","ปงยางคก","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",550,3076.45,1476.66,0,1476.66,1505, [0,0,0,0,0,0,1181.36,295.3,0,0,0,0]],
+["ห้างฉัตร","เมืองยาว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",114,364.55,196.85,196.85,0,205, [0,0,0,0,0,0,0,196.85,0,0,0,0]],
+["ห้างฉัตร","เมืองยาว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",1426,7641.31,4279.13,855.82,3423.31,4510, [0,0,0,0,0,0,1711.65,2353.52,213.96,0,0,0]],
+["ห้างฉัตร","เมืองยาว","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",50,30,87,50,37,91.8, [6.5,6,5.5,6,6.5,7,7.5,9,9.5,8,7.5,8]],
+["ห้างฉัตร","เมืองยาว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",25,80,230.4,0,230.4,214, [0,0,0,0,0,0,50.3,64.3,115.8,0,0,0]],
+["ห้างฉัตร","เมืองยาว","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",109,582,58.2,2,56.2,116.4, [0,0,0,0,0,0,42.3,15.9,0,0,0,0]],
+["ห้างฉัตร","แม่สัน","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",33,85.91,10.3,0,10.3,17.5, [0,0,0,0,0,0,7.3,3,0,0,0,0]],
+["ห้างฉัตร","แม่สัน","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",38,290.95,824,0,824,830, [0,0,0,0,0,0,30.5,350.5,443,0,0,0]],
+["ห้างฉัตร","แม่สัน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",851,4345.92,2390.26,478,1912.26,1929, [0,0,0,0,0,0,836.59,1075.62,478.05,0,0,0]],
+["ห้างฉัตร","แม่สัน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",45,102.57,53.34,53.34,0,56, [0,0,0,0,0,0,0,53.34,0,0,0,0]],
+["ห้างฉัตร","แม่สัน","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",354,1404.7,702.35,0,702.35,737, [0,0,0,0,0,0,702.35,0,0,0,0,0]],
+["ห้างฉัตร","วอแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",44,195.99,93,93,0,100, [0,0,0,0,0,0,0,80.5,12.5,0,0,0]],
+["ห้างฉัตร","วอแก้ว","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",600,4114,2057,411,1646,2060, [0,0,0,0,0,0,411.4,1234.2,411.4,0,0,0]],
+["ห้างฉัตร","วอแก้ว","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",10,115.07,345,0,345,357.8, [0,0,0,0,0,0,80.5,95.8,168.7,0,0,0]],
+["ห้างฉัตร","เวียงตาล","สินค้าพื้นฐาน","ไม้ยืนต้น","ปาล์มน้ำมัน","ปาล์มน้ำมัน",8,135.53,107.05,0,107.05,113.2, [2.79,3.91,3.02,3.13,4.69,4.13,15.69,15.13,10.58,8.02,15.46,20.5]],
+["ห้างฉัตร","เวียงตาล","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",52,309.68,24.77,3,21.77,61.93, [0,0,0,0,0,0,18.5,6.27,0,0,0,0]],
+["ห้างฉัตร","เวียงตาล","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",72,840.8,1933,0,1933,1950, [85,302,520,1026,0,0,0,0,0,0,0,0]],
+["ห้างฉัตร","เวียงตาล","สินค้าพื้นฐาน","ไม้ผล","กล้วยน้ำว้า","กล้วยน้ำว้า",35,106,156,156,0,169, [10,11,10,8,12,16,17,18,15,19,10,10]],
+["ห้างฉัตร","เวียงตาล","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",546,2734,1421.69,284.36,1137.33,1443, [0,0,0,0,0,0,284.34,995.18,142.17,0,0,0]],
+["ห้างฉัตร","เวียงตาล","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",65,207.43,101.63,101.63,0,113.7, [0,0,0,0,0,0,0,81.31,20.32,0,0,0]],
+["ห้างฉัตร","เวียงตาล","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",39,176.97,88.48,0,88.48,92.91, [0,0,0,0,0,0,88.48,0,0,0,0,0]],
+["ห้างฉัตร","หนองหล่ม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",83,412.38,206.19,206.19,0,218.75, [0,0,0,0,0,0,0,164.95,41.24,0,0,0]],
+["ห้างฉัตร","หนองหล่ม","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",548,4068.58,2237.71,447.54,1790.17,2297, [0,0,0,0,0,0,447.54,1566.4,223.77,0,0,0]],
+["ห้างฉัตร","หนองหล่ม","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",48,714.45,1786.5,0,1786.5,1826, [235.5,335,425,791,0,0,0,0,0,0,0,0]],
+["ห้างฉัตร","หนองหล่ม","สินค้าพื้นฐาน","ไม้ผล","มะม่วง","มะม่วงเขียวเสวย",4,60,28,28,0,26, [0,0,0,0,0,0,10,18,0,0,0,0]],
+["ห้างฉัตร","ห้างฉัตร","สินค้าพื้นฐาน","ไม้ผล","ลำไย","ลำไยอีดอ",16,57.3,0.2,0.2,0,3, [0,0,0,0,0,0,0,0.2,0,0,0,0]],
+["ห้างฉัตร","ห้างฉัตร","สินค้าพื้นฐาน","พืชไร่","มันสำปะหลังโรงงาน","มันสำปะหลังโรงงาน",1,55.4,346.25,0,346.25,381.65, [0,0,0,0,0,0,46.75,60.85,238.65,0,0,0]],
+["ห้างฉัตร","ห้างฉัตร","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเหนียว)",462,2776.46,1527.05,305,1222.05,1624.88, [0,0,0,0,0,0,305.41,916.23,305.41,0,0,0]],
+["ห้างฉัตร","ห้างฉัตร","สินค้าพื้นฐาน","ข้าว","ข้าวนาปี","นาปี (ข้าวเจ้า)",33,142.18,75.35,75.35,0,85.02, [0,0,0,0,0,0,0,60.28,15.07,0,0,0]],
+["ห้างฉัตร","ห้างฉัตร","สินค้าพื้นฐาน","ข้าว","ข้าวนาปรัง","นาปรัง (ข้าวเหนียว)",49,203,101.5,0,101.5,106.57, [0,0,0,0,0,0,101.5,0,0,0,0,0]],
+];
+
+const data = DB.map(r => ({
+  district: r[0], subdistrict: r[1], type: r[2], group: r[3], kind: r[4], product: r[5],
+  farmers: r[6], area: r[7], current: r[8], inProv: r[9], outProv: r[10], next: r[11],
+  monthly69: r[12]
+}));
+
+let state = {
+  district: 'all', subdistrict: 'all', type: 'all', group: 'all', kind: 'all', product: 'all',
+  year: '2569', search: '', page: 0, pageSize: 10, trendView: 'group'
+};
+
+const fmt = (n) => {
+  if (n === null || n === undefined || isNaN(n)) return '-';
+  return Number(n).toLocaleString('th-TH', {maximumFractionDigits: 2});
+};
+const fmtShort = (n) => {
+  if (n >= 1000000) return (n/1000000).toFixed(2)+'ล.';
+  if (n >= 1000) return (n/1000).toFixed(1)+'พ.';
+  return Number(n).toFixed(0);
+};
+const unique = (arr) => [...new Set(arr)].sort((a,b)=>a.localeCompare(b,'th'));
+
+function getFiltered() {
+  return data.filter(d =>
+    (state.district==='all' || d.district===state.district) &&
+    (state.subdistrict==='all' || d.subdistrict===state.subdistrict) &&
+    (state.type==='all' || d.type===state.type) &&
+    (state.group==='all' || d.group===state.group) &&
+    (state.kind==='all' || d.kind===state.kind) &&
+    (state.product==='all' || d.product===state.product) &&
+    (state.search==='' || d.product.toLowerCase().includes(state.search.toLowerCase()) || d.kind.toLowerCase().includes(state.search.toLowerCase()))
+  );
+}
+
+function getMonthlyByYear(d, year) {
+  if (year === '2569') return d.monthly69;
+  const total = year==='2568' ? d.current : d.next;
+  if (!total) return Array(12).fill(0);
+  const sum69 = d.monthly69.reduce((a,b)=>a+(+b||0),0);
+  if (sum69 > 0) return d.monthly69.map(v => (v||0) * total / sum69);
+  return Array(12).fill(total/12);
+}
+
+/* ============ INIT FILTERS ============ */
+function initFilters() {
+  populateFilters();
+  ['filterDistrict','filterSubdistrict','filterType','filterGroup','filterKind','filterProduct','filterYear'].forEach(id => {
+    document.getElementById(id).addEventListener('change', (e) => {
+      const key = id.replace('filter','').toLowerCase();
+      const keyMap = {district:'district',subdistrict:'subdistrict',type:'type',group:'group',kind:'kind',product:'product',year:'year'};
+      state[keyMap[key]] = e.target.value;
+      state.page = 0;
+      // Re-populate dependent filters
+      if (['district','subdistrict','type','group','kind'].includes(key)) {
+        populateFilters();
+      }
+      renderAll();
+    });
+  });
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    state.search = e.target.value;
+    state.page = 0;
+    renderAll();
+  });
+  document.getElementById('resetFilters').addEventListener('click', () => {
+    state = { district:'all', subdistrict:'all', type:'all', group:'all', kind:'all', product:'all', year:'2569', search:'', page:0, pageSize:10, trendView: state.trendView };
+    document.getElementById('filterDistrict').value='all';
+    document.getElementById('filterSubdistrict').value='all';
+    document.getElementById('filterType').value='all';
+    document.getElementById('filterGroup').value='all';
+    document.getElementById('filterKind').value='all';
+    document.getElementById('filterProduct').value='all';
+    document.getElementById('filterYear').value='2569';
+    document.getElementById('searchInput').value='';
+    populateFilters();
+    renderAll();
+  });
+}
+
+function populateFilters() {
+  // Get filtered data based on higher-level filters for dependent dropdowns
+  const baseFiltered = data.filter(d =>
+    (state.district==='all' || d.district===state.district) &&
+    (state.type==='all' || d.type===state.type) &&
+    (state.group==='all' || d.group===state.group)
+  );
+  const subdistrictFiltered = data.filter(d =>
+    (state.district==='all' || d.district===state.district) &&
+    (state.subdistrict==='all' || d.subdistrict===state.subdistrict) &&
+    (state.type==='all' || d.type===state.type) &&
+    (state.group==='all' || d.group===state.group)
+  );
+  const kindFiltered = data.filter(d =>
+    (state.district==='all' || d.district===state.district) &&
+    (state.subdistrict==='all' || d.subdistrict===state.subdistrict) &&
+    (state.type==='all' || d.type===state.type) &&
+    (state.group==='all' || d.group===state.group) &&
+    (state.kind==='all' || d.kind===state.kind)
+  );
+
+  fillSelect('filterDistrict', unique(data.map(d=>d.district)), state.district);
+  fillSelect('filterSubdistrict', unique(baseFiltered.map(d=>d.subdistrict)), state.subdistrict);
+  fillSelect('filterType', unique(data.map(d=>d.type)), state.type);
+  fillSelect('filterGroup', unique(baseFiltered.map(d=>d.group)), state.group);
+  fillSelect('filterKind', unique(subdistrictFiltered.map(d=>d.kind)), state.kind);
+  fillSelect('filterProduct', unique(kindFiltered.map(d=>d.product)), state.product);
+
+  renderActiveFilters();
+}
+
+function fillSelect(id, items, currentVal) {
+  const el = document.getElementById(id);
+  const labels = {
+    filterDistrict: 'ทุกอำเภอ', filterSubdistrict: 'ทุกตำบล', filterType: 'ทุกประเภท',
+    filterGroup: 'ทุกกลุ่ม', filterKind: 'ทุกชนิด', filterProduct: 'ทุกสินค้า'
+  };
+  el.innerHTML = `<option value="all">${labels[id]}</option>` +
+    items.map(i => `<option value="${i}" ${i===currentVal?'selected':''}>${i}</option>`).join('');
+}
+
+function renderActiveFilters() {
+  const container = document.getElementById('activeFilters');
+  const chips = [];
+  const labels = {district:'อำเภอ',subdistrict:'ตำบล',type:'ประเภท',group:'กลุ่ม',kind:'ชนิด',product:'สินค้า'};
+  ['district','subdistrict','type','group','kind','product'].forEach(k => {
+    if (state[k] !== 'all') {
+      chips.push(`<span class="chip-badge px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1">
+        <span class="text-emerald-600">${labels[k]}:</span> ${state[k]}
+      </span>`);
+    }
+  });
+  container.innerHTML = chips.length > 0
+    ? `<span class="text-xs text-emerald-700 font-semibold">กรองตาม:</span>` + chips.join('')
+    : `<span class="text-xs text-emerald-600 italic">แสดงข้อมูลทั้งหมด</span>`;
+}
+
+/* ============ KPI ============ */
+function renderKPI() {
+  const f = getFiltered();
+  const year = state.year;
+  let totalProd = 0;
+  f.forEach(d => {
+    const m = getMonthlyByYear(d, year);
+    totalProd += m.reduce((a,b)=>a+b,0);
+  });
+  const farmers = f.reduce((a,d)=>a+d.farmers,0);
+  const area = f.reduce((a,d)=>a+d.area,0);
+  const products = f.length;
+  const districts = unique(f.map(d=>d.district)).length;
+
+  document.getElementById('kpi-total').textContent = fmtShort(totalProd);
+  document.getElementById('kpi-farmers').textContent = fmt(farmers);
+  document.getElementById('kpi-area').textContent = fmtShort(area);
+  document.getElementById('kpi-products').textContent = fmt(products);
+  document.getElementById('kpi-districts').textContent = districts;
+}
+
+/* ============ CALENDAR ============ */
+function renderCalendar() {
+  const f = getFiltered();
+  const year = state.year;
+  const monthLabels = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const totals = Array(12).fill(0);
+  f.forEach(d => {
+    const m = getMonthlyByYear(d, year);
+    m.forEach((v,i) => totals[i] += (v||0));
+  });
+  const max = Math.max(...totals, 1);
+
+  const grid = document.getElementById('calendarGrid');
+  let html = `<div class="grid grid-cols-12 gap-2">`;
+  monthLabels.forEach((m, i) => {
+    const v = totals[i];
+    const pct = v / max;
+    let bg, text;
+    if (pct > 0.8) { bg = 'bg-emerald-800 border-emerald-900'; text = 'text-white'; }
+    else if (pct > 0.6) { bg = 'bg-emerald-600 border-emerald-700'; text = 'text-white'; }
+    else if (pct > 0.4) { bg = 'bg-emerald-400 border-emerald-500'; text = 'text-emerald-950'; }
+    else if (pct > 0.2) { bg = 'bg-emerald-200 border-emerald-300'; text = 'text-emerald-900'; }
+    else if (pct > 0) { bg = 'bg-emerald-50 border-emerald-200'; text = 'text-emerald-800'; }
+    else { bg = 'bg-white border-emerald-100'; text = 'text-gray-400'; }
+
+    html += `
+      <div class="cal-cell rounded-xl p-3 ${bg} ${text} shadow-sm">
+        <div class="text-xs font-bold mb-2 opacity-90">${m}</div>
+        <div class="text-lg font-bold">${fmtShort(v)}</div>
+        <div class="text-xs opacity-75">ตัน</div>
+        <div class="mt-2 h-1.5 rounded-full bg-black/10 overflow-hidden">
+          <div class="h-full bg-current opacity-50" style="width:${pct*100}%"></div>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  grid.innerHTML = html;
+}
+
+/* ============ CHARTS ============ */
+let charts = {};
+const CHART_COLORS = {
+  'ข้าว': '#065f46',
+  'พืชไร่': '#047857',
+  'ไม้ผล': '#059669',
+  'ไม้ยืนต้น': '#10b981',
+  'พืชผัก': '#34d399',
+  'แมลงเศรษฐกิจ': '#6ee7b7',
+  'สมุนไพรและเครื่องเทศ': '#a7f3d0'
+};
+
+function renderTrendChart() {
+  const f = getFiltered();
+  const year = state.year;
+  const monthLabels = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const ctx = document.getElementById('trendChart').getContext('2d');
+
+  if (charts.trend) charts.trend.destroy();
+
+  if (state.trendView === 'group') {
+    const groups = unique(f.map(d=>d.group));
+    const datasets = groups.map(g => {
+      const totals = Array(12).fill(0);
+      f.filter(d=>d.group===g).forEach(d => {
+        const m = getMonthlyByYear(d, year);
+        m.forEach((v,i) => totals[i] += (v||0));
+      });
+      const color = CHART_COLORS[g] || '#047857';
+      return {
+        label: g, data: totals,
+        borderColor: color, backgroundColor: color + '25',
+        fill: true, tension: 0.4, borderWidth: 2.5,
+        pointRadius: 3, pointHoverRadius: 6, pointBackgroundColor: color
+      };
+    });
+    charts.trend = new Chart(ctx, {
+      type: 'line',
+      data: { labels: monthLabels, datasets },
+      options: chartOptions(true)
+    });
+  } else {
+    const prodMap = {};
+    f.forEach(d => {
+      const m = getMonthlyByYear(d, year);
+      const total = m.reduce((a,b)=>a+b,0);
+      if (!prodMap[d.product]) prodMap[d.product] = { name: d.product, total: 0, monthly: Array(12).fill(0) };
+      prodMap[d.product].total += total;
+      m.forEach((v,i) => prodMap[d.product].monthly[i] += (v||0));
+    });
+    const top5 = Object.values(prodMap).sort((a,b)=>b.total-a.total).slice(0,5);
+    const colors = ['#064e3b','#065f46','#047857','#059669','#10b981'];
+    const datasets = top5.map((p,i) => ({
+      label: p.name, data: p.monthly,
+      borderColor: colors[i], backgroundColor: colors[i] + '20',
+      fill: false, tension: 0.4, borderWidth: 2.5
+    }));
+    charts.trend = new Chart(ctx, {
+      type: 'line',
+      data: { labels: monthLabels, datasets },
+      options: chartOptions(false)
+    });
+  }
+}
+
+function chartOptions(fill) {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { family: 'Noto Sans Thai', size: 11, weight: '600' }, usePointStyle: true, padding: 15, color: '#064e3b' } },
+      tooltip: {
+        backgroundColor: 'rgba(6, 78, 59, 0.95)',
+        titleFont: { family: 'Noto Sans Thai', weight: '700' },
+        bodyFont: { family: 'Noto Sans Thai' },
+        borderColor: 'rgba(167, 243, 208, 0.5)', borderWidth: 1,
+        padding: 12, cornerRadius: 8,
+        callbacks: { label: (c) => `${c.dataset.label}: ${fmt(c.parsed.y)} ตัน` }
+      }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#d1fae5' }, ticks: { font: { family: 'Noto Sans Thai' }, callback: v => fmtShort(v), color: '#065f46' } },
+      x: { grid: { display: false }, ticks: { font: { family: 'Noto Sans Thai', weight: '600' }, color: '#065f46' } }
+    }
+  };
+}
+
+function renderPieChart() {
+  const f = getFiltered();
+  const year = state.year;
+  const groupMap = {};
+  f.forEach(d => {
+    const m = getMonthlyByYear(d, year);
+    const total = m.reduce((a,b)=>a+b,0);
+    groupMap[d.group] = (groupMap[d.group]||0) + total;
+  });
+  const labels = Object.keys(groupMap);
+  const values = Object.values(groupMap);
+  const colors = labels.map(l => CHART_COLORS[l] || '#047857');
+
+  const ctx = document.getElementById('pieChart').getContext('2d');
+  if (charts.pie) charts.pie.destroy();
+  charts.pie = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 3, borderColor: '#fff', hoverOffset: 8 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Noto Sans Thai', size: 11, weight: '600' }, usePointStyle: true, padding: 10, color: '#064e3b' } },
+        tooltip: {
+          backgroundColor: 'rgba(6, 78, 59, 0.95)',
+          titleFont: { family: 'Noto Sans Thai', weight: '700' },
+          bodyFont: { family: 'Noto Sans Thai' },
+          padding: 12, cornerRadius: 8,
+          callbacks: {
+            label: (c) => {
+              const total = c.dataset.data.reduce((a,b)=>a+b,0);
+              const pct = ((c.parsed/total)*100).toFixed(1);
+              return `${c.label}: ${fmt(c.parsed)} ตัน (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderDistrictChart() {
+  const f = getFiltered();
+  const year = state.year;
+  const distMap = {};
+  f.forEach(d => {
+    const m = getMonthlyByYear(d, year);
+    const total = m.reduce((a,b)=>a+b,0);
+    distMap[d.district] = (distMap[d.district]||0) + total;
+  });
+  const sorted = Object.entries(distMap).sort((a,b)=>b[1]-a[1]);
+  const labels = sorted.map(s=>s[0]);
+  const values = sorted.map(s=>s[1]);
+
+  const ctx = document.getElementById('districtChart').getContext('2d');
+  if (charts.district) charts.district.destroy();
+  charts.district = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'ผลผลิต (ตัน)',
+        data: values,
+        backgroundColor: values.map((_,i) => {
+          const shades = ['#064e3b','#065f46','#047857','#059669','#10b981','#34d399','#6ee7b7','#a7f3d0','#d1fae5','#ecfdf5'];
+          return shades[i % shades.length];
+        }),
+        borderRadius: 8, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(6, 78, 59, 0.95)',
+          titleFont: { family: 'Noto Sans Thai', weight: '700' },
+          bodyFont: { family: 'Noto Sans Thai' },
+          padding: 12, cornerRadius: 8,
+          callbacks: { label: (c) => `${fmt(c.parsed.x)} ตัน` }
+        }
+      },
+      scales: {
+        x: { beginAtZero: true, grid: { color: '#d1fae5' }, ticks: { font: { family: 'Noto Sans Thai' }, callback: v => fmtShort(v), color: '#065f46' } },
+        y: { grid: { display: false }, ticks: { font: { family: 'Noto Sans Thai', size: 11, weight: '600' }, color: '#064e3b' } }
+      }
+    }
+  });
+}
+
+function renderDistributionChart() {
+  const f = getFiltered();
+  const year = state.year;
+  const distMap = {};
+  f.forEach(d => {
+    if (!distMap[d.district]) distMap[d.district] = { inP: 0, outP: 0 };
+    distMap[d.district].inP += d.inProv;
+    distMap[d.district].outP += d.outProv;
+  });
+  const sorted = Object.entries(distMap).sort((a,b)=>(b[1].inP+b[1].outP)-(a[1].inP+a[1].outP)).slice(0,10);
+  const labels = sorted.map(s=>s[0]);
+  const inData = sorted.map(s=>s[1].inP);
+  const outData = sorted.map(s=>s[1].outP);
+
+  const ctx = document.getElementById('distributionChart').getContext('2d');
+  if (charts.dist) charts.dist.destroy();
+  charts.dist = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'ภายในจังหวัด', data: inData, backgroundColor: '#065f46', borderRadius: 6 },
+        { label: 'ภายนอกจังหวัด', data: outData, backgroundColor: '#6ee7b7', borderRadius: 6 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Noto Sans Thai', size: 11, weight: '600' }, usePointStyle: true, padding: 15, color: '#064e3b' } },
+        tooltip: {
+          backgroundColor: 'rgba(6, 78, 59, 0.95)',
+          titleFont: { family: 'Noto Sans Thai', weight: '700' },
+          bodyFont: { family: 'Noto Sans Thai' },
+          padding: 12, cornerRadius: 8,
+          callbacks: { label: (c) => `${c.dataset.label}: ${fmt(c.parsed.y)} ตัน` }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Noto Sans Thai', size: 10, weight: '600' }, color: '#064e3b' } },
+        y: { stacked: true, beginAtZero: true, grid: { color: '#d1fae5' }, ticks: { font: { family: 'Noto Sans Thai' }, callback: v => fmtShort(v), color: '#065f46' } }
+      }
+    }
+  });
+}
+
+function renderStackedChart() {
+  const f = getFiltered();
+  const year = state.year;
+  const monthLabels = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+  const groupMap = {};
+  f.forEach(d => {
+    const m = getMonthlyByYear(d, year);
+    const total = m.reduce((a,b)=>a+b,0);
+    if (!groupMap[d.group]) groupMap[d.group] = { total: 0, monthly: Array(12).fill(0) };
+    groupMap[d.group].total += total;
+    m.forEach((v,i) => groupMap[d.group].monthly[i] += (v||0));
+  });
+  const topGroups = Object.entries(groupMap).sort((a,b)=>b[1].total-a[1].total).slice(0,6);
+  const colors = ['#064e3b','#065f46','#047857','#059669','#10b981','#34d399'];
+
+  const datasets = topGroups.map(([g, data], i) => ({
+    label: g, data: data.monthly,
+    backgroundColor: colors[i], borderRadius: 4, borderSkipped: false
+  }));
+
+  const ctx = document.getElementById('stackedChart').getContext('2d');
+  if (charts.stacked) charts.stacked.destroy();
+  charts.stacked = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: monthLabels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Noto Sans Thai', size: 11, weight: '600' }, usePointStyle: true, padding: 15, color: '#064e3b' } },
+        tooltip: {
+          backgroundColor: 'rgba(6, 78, 59, 0.95)',
+          titleFont: { family: 'Noto Sans Thai', weight: '700' },
+          bodyFont: { family: 'Noto Sans Thai' },
+          padding: 12, cornerRadius: 8,
+          callbacks: { label: (c) => `${c.dataset.label}: ${fmt(c.parsed.y)} ตัน` }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Noto Sans Thai', weight: '600' }, color: '#064e3b' } },
+        y: { stacked: true, beginAtZero: true, grid: { color: '#d1fae5' }, ticks: { font: { family: 'Noto Sans Thai' }, callback: v => fmtShort(v), color: '#065f46' } }
+      }
+    }
+  });
+}
+
+/* ============ TABLE ============ */
+function renderTable() {
+  const f = getFiltered();
+  const year = state.year;
+  const withTotal = f.map(d => {
+    const m = getMonthlyByYear(d, year);
+    const total = m.reduce((a,b)=>a+b,0);
+    const peaks = m.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v).slice(0,3).filter(x=>x.v>0);
+    const peakLabels = peaks.map(p => ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][p.i]);
+    return { ...d, total, peakLabels };
+  }).sort((a,b)=>b.total-a.total);
+
+  const start = state.page * state.pageSize;
+  const pageData = withTotal.slice(start, start + state.pageSize);
+
+  const tbody = document.getElementById('productTable');
+  tbody.innerHTML = pageData.map((d, i) => {
+    const rank = start + i + 1;
+    const groupColor = CHART_COLORS[d.group] || '#047857';
+    const peakStr = d.peakLabels.length > 0 ? d.peakLabels.join(', ') : '-';
+    return `
+      <tr class="table-row-hover border-b border-emerald-100/60 transition-colors">
+        <td class="py-3 px-3">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg ${rank<=3?'gradient-green text-white':'bg-emerald-50 text-emerald-800 border border-emerald-200'} font-bold text-xs">${rank}</span>
+        </td>
+        <td class="py-3 px-3 text-sm text-emerald-900 font-medium">${d.district}</td>
+        <td class="py-3 px-3 text-sm text-emerald-800">${d.subdistrict}</td>
+        <td class="py-3 px-3">
+          <span class="inline-block px-2.5 py-1 rounded-lg text-xs font-semibold" style="background:${groupColor}20;color:${groupColor};border:1px solid ${groupColor}30">${d.group}</span>
+        </td>
+        <td class="py-3 px-3">
+          <div class="font-semibold text-emerald-900">${d.product}</div>
+          <div class="text-xs text-emerald-600">${d.kind}</div>
+        </td>
+        <td class="py-3 px-3 text-right text-sm font-medium text-emerald-800">${fmt(d.farmers)}</td>
+        <td class="py-3 px-3 text-right text-sm font-medium text-emerald-800">${fmt(d.area)}</td>
+        <td class="py-3 px-3 text-right font-bold text-emerald-900">${fmt(d.total)}</td>
+        <td class="py-3 px-3 text-xs text-emerald-700">${peakStr}</td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('tableInfo').textContent = `แสดง ${withTotal.length>0?start+1:0}-${Math.min(start+state.pageSize, withTotal.length)} จาก ${withTotal.length} รายการ`;
+  document.getElementById('prevPage').disabled = state.page === 0;
+  document.getElementById('nextPage').disabled = start + state.pageSize >= withTotal.length;
+}
+
+/* ============ EVENTS ============ */
+document.getElementById('prevPage').addEventListener('click', () => {
+  if (state.page > 0) { state.page--; renderTable(); }
+});
+document.getElementById('nextPage').addEventListener('click', () => {
+  const f = getFiltered();
+  if ((state.page+1) * state.pageSize < f.length) { state.page++; renderTable(); }
+});
+
+document.querySelectorAll('.chart-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.chart-tab').forEach(b => {
+      b.classList.remove('tab-active');
+      b.classList.add('bg-emerald-50','text-emerald-700','border','border-emerald-200');
+    });
+    btn.classList.add('tab-active');
+    btn.classList.remove('bg-emerald-50','text-emerald-700','border','border-emerald-200');
+    state.trendView = btn.dataset.view;
+    renderTrendChart();
+  });
+});
+
+/* ============ RENDER ALL ============ */
+function renderAll() {
+  renderKPI();
+  renderCalendar();
+  renderTrendChart();
+  renderPieChart();
+  renderDistrictChart();
+  renderDistributionChart();
+  renderStackedChart();
+  renderTable();
+}
+
+initFilters();
+renderAll();
+</script>
+</body>
+</html>
